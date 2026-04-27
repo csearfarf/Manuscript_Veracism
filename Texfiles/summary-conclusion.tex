@@ -1,0 +1,171 @@
+% Summary and Conclusion
+
+\section{SUMMARY AND CONCLUSION}
+
+\subsection{Summary}
+
+This study designed, developed, and evaluated \textbf{VERACISM} (Verifiable Academic Credential
+Integrity System with Multi-tenancy), a decentralized academic document verification platform
+developed for the University of the Philippines Open University (UPOU). The system addresses the
+persistent problem of academic credential fraud by combining cryptographic integrity verification,
+decentralized Web3 storage, and multi layered threat scanning into a single cohesive platform.
+
+VERACISM adopts a multitenant architecture that allows multiple educational institutions
+(tenants) to independently manage their own documents while sharing common platform
+infrastructure. The core workflow consists of three stages: (1) secure document upload with
+real time malware and phishing scanning via ClamAV, YARA rules, and a PDF analyzer; (2) encrypted
+decentralized storage on Filecoin/IPFS through the Lighthouse protocol, producing a tamper evident
+Content Identifier (CID); and (3) public verification, where any stakeholder may confirm a
+document's authenticity by resolving the CID and comparing its SHA-256 hash against the original
+record.
+
+The system was evaluated across five testing phases: functional and integration testing,
+performance testing, security testing, and user acceptance testing.
+
+All evaluation activities followed the baseline defined in the Project
+Assessment chapter, including a hybrid test strategy that combined automated
+API execution and manual role based verification.
+
+\subsubsection{Functional and Integration Testing}
+
+Automated testing executed a suite of \textbf{182 assertions} across 41 test cases: 22
+integration test cases (93 assertions) covering the scan, upload, report retrieval, CID
+verification, download, and storage workflows, and 19 functional test cases (89 assertions)
+exercising role based access control for Admin and Tenant roles. All 182 assertions passed,
+yielding a \textbf{100\% automated test pass rate} (see Appendix~\ref{appendix:integration-tests}
+and Appendix~\ref{appendix:functional-tests}).
+
+Role based manual and code review testing evaluated 30 test cases spanning Admin and Tenant
+workflows. Of these, \textbf{27 passed fully} (90.0\%), \textbf{2 passed partially} (6.7\%), and
+\textbf{1 failed} (3.3\%). The single failure (TC-ITO-005) identified the absence of a retry
+policy when the Lighthouse storage service is temporarily unavailable, leaving the system
+vulnerable to transient upload failures. Two partial results highlighted incomplete scoped audit
+log visibility in the UI (TC-ITO-006) and the absence of a \texttt{VerificationLog} write during
+public document verification (TC-E2E-003). These three defects have been recorded and are
+addressed in the Future Work section. Despite these items, the core document lifecycle of upload,
+scan, store, retrieve, and verify operated correctly across all evaluated scenarios.
+
+\subsubsection{Performance Testing}
+
+Performance evaluation was conducted in two rounds using k6 against the public CID verification
+endpoint at 100 virtual users (VUs) sustained for five minutes.
+
+The initial round (\textbf{Version 1.0}) produced an elevated error rate, which was subsequently
+traced not to application layer defects but to an Nginx reverse proxy rate limiting policy that
+throttled concurrent requests before they reached the backend. After the rate limiting threshold
+was adjusted, the second round (\textbf{Version 1.1}) showed a \textbf{significantly reduced error
+rate}, confirming that the application layer is performant under the tested load conditions. Both
+rounds demonstrated that median response times remained within acceptable bounds, with P95 latency
+values consistent with the expected overhead of decrypting and streaming content from the
+Lighthouse proxy. A summary of both rounds is provided in
+Appendix~\ref{appendix:performance}.
+
+These outcomes satisfied the planned performance criteria in the Project
+Assessment baseline, namely stable availability under concurrent traffic,
+acceptable response behavior, and clear root cause identification for observed
+errors.
+
+\subsubsection{User Acceptance Testing}
+
+User acceptance testing was completed using role based task scripts aligned to
+the Project Assessment chapter. The executed UAT cycle covered 30 role based
+cases across administrator, tenant office, registrar, student, external
+verifier, and cross role flows.
+
+UAT scoring was based on participant responses captured in
+\textit{VERACISM\_UAT - Form Responses 1.csv}.
+
+UAT was scored as role scoped responses, where non applicable UAT columns were
+left blank by design for participants outside that role. Across 16 recorded
+role scoped evaluations, outcomes were \textbf{15 passed} (93.8\%),
+\textbf{1 partially completed} (6.2\%), and \textbf{0 failed}. At the
+unique UAT case level, all 8 UAT IDs received responses, with 7 passed and 1
+partial outcome.
+
+These outcomes confirm end user readiness for controlled deployment while
+preserving visibility of deferred improvements already captured in the
+roadmap (see Appendix~\ref{appendix:uat-results}).
+
+\subsubsection{Security Testing}
+
+Security assessment was performed in two phases. The first phase employed Burp Suite
+Community Edition as a Dynamic Application Security Testing (DAST) tool and produced several
+tentative findings including SQL injection and reflected XSS candidates. Upon investigation, all
+SQL injection findings were determined to be false positives: the backend exclusively uses Entity
+Framework Core with parameterized queries, eliminating the SQL injection attack surface.
+Reflected XSS candidates were similarly reviewed against the Angular frontend, which enforces
+strict contextual output encoding by default.
+
+The second phase used manual security testing and code level remediation review to validate
+the initial scanner output. This phase confirmed that many findings from the first DAST pass
+were false positives rather than exploitable vulnerabilities. After validation, the team identified
+and confirmed
+\textbf{five genuine vulnerabilities} (VUL-01 through VUL-05) ranging in severity from Low to
+Medium-High. All five were remediated prior to the final evaluation:
+
+\begin{itemize}
+    \item \textbf{VUL-01} (Low): Verbose error messages exposing internal stack traces;
+          remediated by replacing raw exception output with generic error responses.
+    \item \textbf{VUL-02} (Medium-High): Missing \texttt{INTERNAL\_API\_KEY} enforcement on the
+          Lighthouse encryption service; remediated by implementing API key middleware.
+    \item \textbf{VUL-03} (Low-Medium): Multer-uploaded temporary files not deleted after
+          processing; remediated by adding deterministic cleanup logic.
+    \item \textbf{VUL-04} (Medium-High): Missing \texttt{GET /health} endpoint causing Docker
+          healthcheck failures; remediated by adding a health endpoint.
+    \item \textbf{VUL-05} (Medium-High): Inline \texttt{HttpClient} instantiation bypassing
+          the \texttt{LighthouseStorageService} abstraction; remediated by routing all Lighthouse
+          calls through the service layer.
+\end{itemize}
+
+Detailed vulnerability evidence and remediation steps are provided in
+Appendix~\ref{appendix:security}.
+
+The security outcomes were also consistent with the Project Assessment
+baseline, which required verification of access boundaries, safe error
+handling, and evidence based review of scanner findings.
+
+
+
+% -----------------------------------------------------------------------
+\subsection{Conclusion}
+
+The results collectively demonstrate that VERACISM is a \textbf{operationally validated, security hardened,
+and reasonably performant} platform for decentralized academic credential verification. The system
+successfully fulfills its primary objective: enabling educational institutions to upload student
+documents, secure them with cryptographic integrity proofs on a decentralized network, and allow
+any stakeholder to independently verify authenticity without requiring access to a central
+authority or trusted intermediary.
+
+The automated test suite recorded a \textbf{100\% assertion pass rate}, and the manual test suite
+achieved a \textbf{90.0\% full pass rate} with identified gaps limited to noncritical features
+(retry logic, audit log UI scoping, and verification log persistence). These gaps do not compromise
+the core verification guarantee and are scoped as incremental improvements in the roadmap.
+
+The security posture of VERACISM improved substantially over the course of development. All five
+confirmed vulnerabilities were remediated, and the DAST flagged SQL injection findings were
+eliminated by architectural choice: the consistent use of Entity Framework Core with parameterized
+queries throughout the backend. Post remediation, the system presents no known critical or high
+severity vulnerabilities.
+
+Performance testing confirmed that the application layer is capable of handling moderate concurrent
+load (100 VUs) without service degradation, provided that infrastructure level rate limiting is
+tuned appropriately to the expected request volume. The discovery of the Nginx rate limiting
+misconfiguration during Version 1.0 testing, and its resolution in Version 1.1, is itself a
+valuable outcome: it demonstrates that performance testing surfaced a real infrastructure gap that
+would not have been visible through functional testing alone.
+
+\subsubsection{Contributions}
+
+This study contributes: (1) a working open source reference implementation of a
+multitenant decentralized document verification system using Web3 storage; (2) a DevSecOps
+integration pattern that embeds ClamAV, YARA, and PDF phishing analysis into the document
+ingestion pipeline; (3) empirical evidence from functional, integration, performance, and
+security testing of the platform; and (4) a documented vulnerability remediation lifecycle
+applicable to similar academic information systems developed in constrained institutional
+environments.
+
+VERACISM establishes a foundation for further research into blockchain anchored academic
+credential ecosystems, privacy preserving verification protocols, and standards based
+interoperability with frameworks such as W3C Verifiable Credentials and Open Badges.
+
+

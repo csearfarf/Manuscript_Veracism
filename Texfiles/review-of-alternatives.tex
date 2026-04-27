@@ -1,0 +1,110 @@
+\section{REVIEW OF EXISTING ALTERNATIVES}
+International School Manila staff and external reviewers currently rely on centralized attestations, registrar portals, and provider immutability to establish authenticity. Files are uploaded to institutional storage and supported by versioning and access logs.In some Higher Education Institutions (HEIs) in the Phillippines, Formal checks proceed through the CHED eCAV portal which standardizes requests but remains platform bound and location addressed. Verifiers must trust the portal metadata rather than recomputing a content bound proof against the bytes of the file itself \citep{CommissionOnHigherEducationND}. Government pilots such as DPWH Integrity Chain and GovChain demonstrate national appetite for tamper evident public records, yet they target public sector datasets and do not manage diverse academic reports with independent byte level validation by third parties \citep{DPWH2025,BetterGovernmentPhilippinesND}.
+
+The strongest resources for education focus on verifia ble credentials. EduCredPH proposed a permissioned blockchain network for educational credential verification in the Philippine context, allowing higher education institutions, third party verifiers, and learners to manage and verify credentials on a shared Hyperledger Fabric network \citep{EduCredPH2024}. Singapore's OpenCerts scales this approach across institutions by issuing signed payloads that any verifier can confirm without contacting the issuer. The SkillsFuture technical annex explains the data model and verification flow in clear operational steps, while NTU's guidance shows day to day adoption at an institutional level \citep{GovTech2019,SkillsFuture2018,NTUND}. Research and university applications such as UTM BADVES and DIAR reinforce end to end issuance, revocation, and verifier experience, providing ASEAN and global feasibility evidence. These efforts remain credential centered and do not provide content addressed permanence for unstructured academic reports at scale \citep{Naji2023,MohebiAghdam2024}.
+
+VERACISM stands out by extending the credential verification ethos to every finalized report. At ingest, each file is scanned and validated, then hashed with SHA 256 to produce a content identifier which changes with any byte modification. For durability and public corroboration, files are persisted on decentralized infrastructure where deal evidence is visible through public explorers. Auditors, educators, and students can rehash a retrieved file and compare the result with the recorded identifier, then corroborate storage evidence without ISM credentials. This design places cryptographic proof beneath existing portals. eCAV can remain the national front door for policy and records processing, while VERACISM supplies content addressed evidence and independent verification for any report artifact. Local initiatives such as GovChain and Integrity Chain confirm feasibility for tamper evident public records, which VERACISM adapts to the academic domain with role based access, tenant aware metadata, and immutable audit events. In effect, where alternatives centralize trust or focus on credentials, VERACISM replaces institutional assurances with explicit and independently testable proof across all report types \citep{CommissionOnHigherEducationND,BetterGovernmentPhilippinesND,DPWH2025,GovTech2019,SkillsFuture2018,NTUND,EduCredPH2024,Naji2023,MohebiAghdam2024}.
+
+\begin{center}
+\captionsetup{type=table}
+
+\smalltable
+\scriptsize
+\begin{tabular}{|>{\raggedright\arraybackslash}p{2.6cm}|
+                >{\raggedright\arraybackslash}p{1.8cm}|
+                >{\raggedright\arraybackslash}p{2.6cm}|
+                >{\raggedright\arraybackslash}p{2.6cm}|
+                >{\raggedright\arraybackslash}p{2.6cm}|}
+\hline
+\textbf{System (License/Type)} &
+\textbf{Platform} &
+\textbf{Brief Description} &
+\textbf{Basic Functionalities} &
+\textbf{Relation to the Proposed System} \\
+\hline\hline
+
+\textbf{VERACISM} &
+.NET 8 API, MSSQL, IPFS, Filecoin &
+Content addressed storage and verification for ISM reports. &
+Scan and validate files, hash with SHA 256, store on decentralized storage, log actions, enforce role based access. &
+-- \\
+\hline
+
+CHED eCAV (Government portal) &
+Web portal &
+National portal for electronic verification of academic records. &
+Receive verification requests, check records, issue electronic certifications. &
+External authority; VERACISM can add file level proof for ISM records used in eCAV. \\
+\hline
+
+DPWH Integrity Chain and GovChain (Government pilots) &
+Public blockchain platforms &
+Pilots for transparent and tamper evident government project data. &
+Record project data on a blockchain and expose entries for public viewing and checking. &
+Demonstrate feasibility of tamper evident records but focus on government datasets, not ISM reports. \\
+\hline
+
+EduCredPH (Philippine credential network) &
+Permissioned blockchain (Hyperledger Fabric) &
+Credential network for Philippine higher education institutions. &
+Issue, store, and verify academic credentials across participating institutions. &
+Addresses credential fraud and multi institution verification, but not unstructured ISM reports or malware scanning. \\
+\hline
+
+OpenCerts (Singapore) (National system) &
+Public verification system &
+Singapore platform for digital education and training certificates. &
+Issue structured certificate files and support public verification without contacting issuers. &
+Mature credential model but tied to its ecosystem and not designed as general ISM report storage. \\
+\hline
+
+Research systems: UTM BADVES and DIAR (Research) &
+University prototypes &
+Blockchain based academic credential issuance and checking. &
+Model issuing, revoking, and verifying awards using distributed ledger technology. &
+Provide design patterns and feasibility evidence but are prototypes, not ready for ISM production with diverse reports. \\
+\hline
+
+\end{tabular}
+\caption{Summary of Existing Alternatives}
+\label{table:existing-alternatives-summary}
+\end{center}
+
+
+\begin{center}
+	\captionsetup{type=table}
+	
+    \smalltable \scriptsize
+	\begin{tabular}{|>{\raggedright\arraybackslash}p{3.0cm}| >{\centering\arraybackslash}p{1.7cm}|
+	>{\centering\arraybackslash}p{1.7cm}| >{\centering\arraybackslash}p{1.7cm}| >{\centering\arraybackslash}p{1.7cm}|
+	>{\centering\arraybackslash}p{1.7cm}| >{\centering\arraybackslash}p{1.9cm}|}
+		\hline
+		\textbf{System}                 & \textbf{Content-\ addressed storage for all reports} & \textbf{Decentralized storage for reports} & \textbf{Malware scanning at ingest} & \textbf{Credential-\ focused model} & \textbf{Government / public - \ records focus} & \textbf{Internal ISM storage and checking layer} \\
+		\hline
+		\hline
+		\textbf{VERACISM}               & Yes                                                 & Yes                                        & Yes                                 & No                                 & No                                          & Yes                                              \\
+		\hline
+		CHED eCAV                       & No                                                  & No                                         & No                                  & Yes                                & No                                          & No                                               \\
+		\hline
+		DPWH Integrity Chain / GovChain & No                                                  & Yes                                        & No                                  & No                                 & Yes                                         & No                                               \\
+		\hline
+		EduCredPH                       & No                                                  & No                                         & No                                  & Yes                                & No                                          & No                                               \\
+		\hline
+		OpenCerts (Singapore)           & No                                                  & No                                         & No                                  & Yes                                & No                                          & No                                               \\
+		\hline
+		UTM BADVES / DIAR               & No                                                  & No                                         & No                                  & Yes                                & No                                          & No                                               \\
+		\hline
+	\end{tabular}
+    \caption{Feature Mapping of Existing Alternatives}
+	\label{table:existing-alternatives-feature-mapping} 
+\end{center}
+
+
+
+\subsection{Summary of Existing Alternatives}
+
+The systems in Table~\ref{table:existing-alternatives-summary} each solve a part of the trust and verification problem, but they are designed for their own scope. Together they strengthen credentials and public sector records, yet they still leave ISM without a single, content based pipeline for all finalized reports under local control.
+
+CHED eCAV is a national gateway to the verification of academic records, however, it only receives requests and provides responses and does not access the files and does not encroach on the protection provided by ISM on how it stores them. DPWH Integrity Chain and GovChain demonstrate that the government project-related information can be placed on a blockchain, but it is configured to student reports. EduCredPH provides higher education schools with a common means of issuing and verifying credentials, whereas OpenCerts provides Singapore with the same but nationwide, both remain limited to formal certificates. UTM BADVES and DIAR university prototypes investigate the way a university can produce and revoke credentials using distributed ledger technology, but these are not yet products, only research projects. These systems combined aid in external verification, credential fraud, but each of them cannot serve as the internal storage and checking layer of ISM to all report files, and thus cannot substitute VERACISM.
+
+The biggest gap in the existing systems is that they look either at credentials alone or at government project data, so none of them gives ISM lasting protection for every report together with malware checks and audit trails that follow ISM roles and students. VERACISM is worth building because it pulls those missing pieces into one flow that staff already use. When a report is uploaded, the system first runs antivirus and YARA scans, then checks the file type and size, computes a hash, and saves the content on decentralized storage while writing every step into an audit log that cannot be changed. It treats each finalized report much like a diploma, giving it a content identifier that is tied to ISM metadata and access rules. Later, any authorized person can take the file, recompute the hash, and compare it with the stored value to prove that the report has not been altered and is still present in storage. This turns trust in ISM records from a matter of habit into something that can be shown and checked, with a clear record of who handled which report and when.

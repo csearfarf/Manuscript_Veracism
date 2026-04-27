@@ -1,0 +1,916 @@
+% Put the project assessment here
+\section{Project Assessment}
+
+This chapter describes how VERACISM will be evaluated once development is
+complete. The goal of the assessment process is to confirm that the system is
+functional, secure, usable, and ready for deployment within the International
+School Manila (ISM) environment. For the proposal stage, the focus is on the
+planned testing approach: the types of tests to be performed, the tools to be
+used, and the metrics that will be collected. Actual test results will be
+produced only after implementation.
+
+\subsection{Functional Testing}
+
+Functional testing focused on verifying that the implemented features of
+VERACISM behaved according to the intended system requirements. The testing
+scope covered the main document-processing functions of the platform,
+including file upload, validation, malware scanning, hashing, CID generation,
+metadata retrieval, controlled download, dashboard and audit visibility,
+tenant-scoped access, and public verification.
+
+The functional assessment used a \textbf{hybrid approach} composed of
+\textbf{automated black-box API testing} and \textbf{manual role-based
+functional testing}. Automated execution was carried out through Postman
+collections run using Newman in the staging environment. These automated
+tests covered the public API v1 workflow and selected end-to-end user
+journeys, including IT Office upload, Registrar upload, student and external
+verification, protected download behaviour, and cross-role upload-to-verify
+flows.
+
+Because the current Newman suite primarily exercises the public API v1
+surface, manual functional testing was also included for modules and flows
+that require user interface interaction, Bearer JWT protected internal
+endpoints, QR-based testing with a mobile device, dashboard inspection,
+tenant-scoped access checks, and role-based administration tasks.
+
+Manual functional procedures were prepared and executed for the System
+Administrator, IT Office / tenant user, Administration Office / Registrar,
+Student, External Auditor / Educator, and cross-role end-to-end scenarios.
+These procedures covered tenant approval, user and role management, API key
+and configuration changes, audit log review and export, health monitoring,
+QR display and scan validation, dashboard status review, report deletion or
+immutability checks, comprehension checks, cross-tenant access boundary
+tests, and multi-network verification checks.
+
+The primary criteria used in functional testing included correct HTTP status
+codes, correct response structures, presence and format of expected fields,
+correct role and tenant access enforcement, correct UI behaviour where
+applicable, successful completion of required user journeys, and retention of
+the required audit evidence. Supporting automated and manual functional
+testing records will be retained as appendix evidence.
+
+\subsubsection{Functional test success criteria}
+
+To make the functional assessment explicit and reproducible, each test area is
+defined with measurable criteria for a \textit{Pass} result. These criteria
+focus on correct outputs, correct security behaviour, correct logging,
+observable handling of failures, and coverage of both automated and manual
+functional modules.
+
+% ---------------------------
+% Functional table (Part 1)
+% ---------------------------
+\begin{table}[H]
+  \centering
+  \smalltable
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{5pt}%
+  \renewcommand{\arraystretch}{1.35}%
+
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.16\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.16\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.24\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.12\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.16\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.08\textwidth}|}
+    \hline
+    \textbf{Planned TC ID(s)} &
+    \textbf{Method} &
+    \textbf{Success criteria for pass} &
+    \textbf{Target} &
+    \textbf{Evidence} &
+    \textbf{Result} \\
+    \hline\hline
+
+    TC-ITO-001, TC-REG-001 &
+    Automated &
+    Valid authenticated uploads are accepted, stored in temporary storage,
+    initial metadata is recorded, and a tracking identifier is returned. &
+    Accepted upload behaves as specified &
+    API logs, tracking ID, temp storage record &
+    Pass / Fail \\
+    \hline
+
+    TC-ITO-002, TC-REG-002 &
+    Automated &
+    Invalid, oversized, unsupported, or unauthorized uploads are rejected and
+    do not create stored artifacts. &
+    Rejected cases behave as specified &
+    Error response, logs, absence of stored artifact &
+    Pass / Fail \\
+    \hline
+
+    TC-ITO-003, TC-REG-003 &
+    Automated &
+    Retrieved report metadata, student association, SHA-256 hash, and CID are
+    consistent with the uploaded submission. &
+    Stored values match submitted values &
+    API response, metadata comparison, lookup result &
+    Pass / Fail \\
+    \hline
+
+    TC-ITO-004, TC-REG-004, TC-STU-001, TC-EXT-001 &
+    Automated + Manual &
+    Successful uploads produce a usable CID and verification path, and QR-based
+    verification resolves correctly through the public portal. &
+    CID present and QR resolves correctly &
+    API response, UI screenshot, mobile scan proof &
+    Pass / Fail \\
+    \hline
+
+    TC-REG-005, TC-ADM-004 &
+    Manual &
+    Dashboard and audit views show the correct upload, anchoring, and audit
+    information, and exports work in the required formats. &
+    Statuses visible and export succeeds &
+    UI screenshots, export file, audit review notes &
+    Pass / Fail \\
+    \hline
+
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{Functional test success criteria with automated and manual coverage (Part 1)}
+  \label{tab:functional-success-criteria-a}
+\end{table}
+
+% ---------------------------
+% Functional table (Part 2)
+% ---------------------------
+\begin{table}[H]
+  \centering
+  \smalltable
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{4pt}%
+  \renewcommand{\arraystretch}{1.35}%
+
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.17\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.14\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.29\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.13\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.15\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.08\textwidth}|}
+    \hline
+    \textbf{Planned TC ID(s)} &
+    \textbf{Method} &
+    \textbf{Success criteria for pass} &
+    \textbf{Target} &
+    \textbf{Evidence} &
+    \textbf{Result} \\
+    \hline\hline
+
+    TC-ADM-001, TC-ADM-002, TC-ADM-003 &
+    Manual &
+    Tenant approval, user and role management, API key management, and
+    critical configuration changes can be completed through the admin module
+    and reflect correctly in the system. &
+    Admin actions succeed and are reflected correctly &
+    UI screenshots, admin logs, review notes &
+    Pass / Fail \\
+    \hline
+
+    TC-ADM-005, TC-ITO-006, TC-STU-005, TC-EXT-004 &
+    Manual + Automated &
+    Restricted views and actions are accessible only to authorized roles.
+    Unauthorized attempts are rejected, and tenant boundaries are enforced. &
+    0 unauthorized privileged actions succeed &
+    Access logs, route checks, API rejection results &
+    Pass / Fail \\
+    \hline
+
+    TC-REG-006 &
+    Manual &
+    Finalized report content cannot be casually edited through normal user
+    paths, and any delete behaviour follows the intended soft-delete or
+    policy-controlled workflow. &
+    No improper content modification path exposed &
+    UI inspection, code review note, behaviour check &
+    Pass / Fail \\
+    \hline
+
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{Functional test success criteria with automated and manual coverage (Part 2)}
+  \label{tab:functional-success-criteria-b}
+\end{table}
+
+% ---------------------------
+% Functional table (Part 3)
+% ---------------------------
+\begin{table}[H]
+  \centering
+  \smalltable
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{4pt}%
+  \renewcommand{\arraystretch}{1.35}%
+
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.17\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.14\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.29\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.13\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.15\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.08\textwidth}|}
+    \hline
+    \textbf{Planned TC ID(s)} &
+    \textbf{Method} &
+    \textbf{Success criteria for pass} &
+    \textbf{Target} &
+    \textbf{Evidence} &
+    \textbf{Result} \\
+    \hline\hline
+
+    TC-STU-002, TC-STU-003, TC-EXT-002, TC-E2E-001, TC-E2E-002 &
+    Automated &
+    Valid CID verification shows the correct result and invalid or fabricated
+    CID values return a clear warning without internal error leakage. &
+    Correct result and message shown for all cases &
+    Verification response, screenshots, timing capture &
+    Pass / Fail \\
+    \hline
+
+    TC-STU-004, TC-EXT-003, TC-E2E-003 &
+    Manual / Hybrid &
+    Non-technical users can understand the verification result, repeated checks
+    from different networks remain consistent, and unavailable content cases
+    show clear warnings without exposing sensitive details. &
+    Result understandable and behaviour consistent &
+    Observation notes, network comparison notes, warning screen proof &
+    Pass / Fail \\
+    \hline
+
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{Functional test success criteria with automated and manual coverage (Part 3)}
+  \label{tab:functional-success-criteria-c}
+\end{table}
+
+\subsubsection{Functional test result classification}
+
+For functional testing, each planned test case will be classified using one of
+the following outcome labels.
+
+\begin{table}[H]
+  \centering
+  \smalltable
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{6pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.22\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.68\textwidth}|}
+    \hline
+    \textbf{Outcome label} & \textbf{Definition} \\
+    \hline\hline
+
+    \textbf{Pass} &
+    All expected behaviours, outputs, access controls, and required evidence
+    are observed, and the result matches the stated success criteria. \\
+    \hline
+
+    \textbf{Fail} &
+    One or more expected behaviours, outputs, controls, or validations are not
+    met, or incorrect behaviour is observed during execution. \\
+    \hline
+
+    \textbf{Partial} &
+    The feature is only partly implemented, the flow is only partly testable,
+    or the observed behaviour satisfies only part of the expected result. \\
+    \hline
+
+    \textbf{Not Implemented} &
+    The required feature, control, or supporting logic is not yet available in
+    the current build, so the planned test case cannot be fully executed. \\
+    \hline
+
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{Functional test result classification}
+  \label{tab:functional-result-classification}
+\end{table}
+
+Accordingly, the functional testing tables define the conditions required for a
+\textit{Pass}, while actual execution results are recorded separately using the
+classification labels in Table~\ref{tab:functional-result-classification}.
+
+\subsection{Integration Testing}
+
+Integration testing focused on verifying that the major VERACISM components
+worked correctly when combined into a complete operational pipeline. The
+integration scope covered the interaction between the .NET 8 backend API,
+SQL Server, ClamAV, YARA, Lighthouse/IPFS storage, and the public
+verification process.
+
+The integration assessment was performed through automated API-based tests in
+the staging environment. These tests targeted the public API v1 endpoints
+through API key authentication and covered the main integrated operations of
+the platform, including upload and scan processing, report retrieval by CID,
+public verification, controlled file download, and storage-status checking.
+Both valid and invalid cases were included to assess API contract behaviour,
+error handling, response consistency, and subsystem coordination.
+
+The integration design also checked whether accepted uploads moved correctly
+through the scanning, hashing, metadata, and storage stages, and whether
+invalid or unauthorized requests were blocked without creating unintended
+records. Additional attention was given to tenant isolation,
+public-versus-protected endpoint behaviour, and consistency between uploaded
+metadata and retrieved metadata.
+
+The primary criteria used in integration testing included end-to-end request
+completion, correctness of inter-service outputs, validation of report and CID
+data across steps, correct rejection of invalid requests, and preservation of
+system boundaries across tenants and access levels.
+
+\subsection{Performance Testing}
+
+Performance testing focused on the responsiveness and stability of VERACISM
+under expected verification traffic in the staging environment. The
+performance assessment concentrated on the public CID verification endpoint
+because this function is central to the use of the platform by students,
+external verifiers, and partner institutions that require prompt integrity
+checks.
+
+The performance run was carried out using Postman Performance Testing against
+the VERACISM API staging environment. The test profile used a fixed load with
+100 virtual users over a duration of five minutes. The test scenario targeted
+the valid public verification request and captured request volume,
+throughput, response time, percentile response times, and observed
+transport-level errors during the run.
+
+The performance criteria for this assessment included sustained endpoint
+availability during the test window, acceptable average and percentile
+response times, stable throughput under concurrent traffic, and a minimal
+error rate. The captured metrics will be retained as performance evidence for
+later comparison and discussion in the results chapter.
+
+
+\subsection{User Acceptance Testing}
+
+User acceptance testing will concentrate on the main actors of VERACISM:
+system administrators, tenant administrators, IT integrators, and external
+verifiers using the public portal. Test scenarios will be derived from the
+core functional flows and role-based capabilities of the system, including
+dashboard review, report and file management, tenant administration, security
+configuration, audit-log review, student and integrator management, public
+verification, and API-based integration workflows.
+
+The user acceptance assessment will use task-based scripts aligned with the
+system acceptance criteria. Each UAT case will specify the participant role,
+linked planned test case identifiers, the assigned task, the expected result,
+and the final recorded outcome. Participants will perform the assigned tasks,
+while observers will record task completion, time taken, defects
+encountered, and any task blockers observed during execution. Results will be
+recorded using objective completion outcomes such as \textit{Passed},
+\textit{Partially Completed}, or \textit{Failed}, supported by notes and
+evidence captured during the session.
+
+\begin{table}[htbp]
+  \centering
+  \smalltable
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{8pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{3.3cm}|
+                  >{\centering\arraybackslash}p{2.0cm}|
+                  >{\raggedright\arraybackslash}p{6.6cm}|}
+    \hline
+    \textbf{Planned user group} &
+    \textbf{Target \#} &
+    \textbf{Representative test tasks} \\
+    \hline\hline
+
+    System Administrator (Super Admin) &
+    1--2 &
+    Review dashboard analytics and service health; manage reports and tenant
+    records; configure YARA and ClamAV settings; manage API keys; review and
+    export audit logs. \\
+    \hline
+
+    Tenant Administrator (Administration Office / ISM offices) &
+    2-3 &
+    Review dashboard summaries; upload and manage files; review version
+    history; copy CID and download files; manage students; manage integrator
+    users and API keys. \\
+    \hline
+
+    IT Integrators / Developers &
+    2-3 &
+    Submit reports through the API; retrieve report details; download report
+    files; check file processing or status results; handle invalid or rejected
+    API requests correctly. \\
+    \hline
+
+    External verifiers (students, auditors, public user) &
+    4--5 &
+    Verify records through QR code or CID entry using the public portal and
+    confirm that valid, invalid, tampered, or unavailable cases display the
+    correct result. \\
+    \hline
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{Planned user-testing participants and task coverage}
+  \label{table:user-testing-plan}
+\end{table}
+
+\subsubsection{User acceptance success criteria}
+
+To make the user acceptance assessment explicit and reproducible, each UAT
+case is defined with measurable criteria for a \textit{Passed} result. These
+criteria focus on successful task completion, achievement of the expected
+result, absence of blocking defects, and the presence of sufficient
+supporting evidence for the recorded outcome.
+
+% =========================================================
+% System Administrator UAT
+% =========================================================
+\begin{table}[H]
+  \centering
+  \smalltable
+  \scriptsize
+  {%
+  \setlength{\tabcolsep}{3pt}
+  \renewcommand{\arraystretch}{1.18}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.09\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.15\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.22\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.30\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.14\textwidth}|
+                  >{\centering\arraybackslash}p{0.10\textwidth}|}
+    \hline
+    \textbf{UAT ID} &
+    \textbf{Linked TC ID(s)} &
+    \textbf{Task} &
+    \textbf{Success criteria for passed result} &
+    \textbf{Evidence} &
+    \textbf{Result} \\
+    \hline\hline
+
+    UAT-01 &
+    TC-ADM-001, TC-ADM-002, TC-ADM-004 &
+    Review administrator dashboard and core records. &
+    Dashboard data, recent records, and report information are visible and can
+    be reviewed without access or display errors. &
+    Screenshots, viewed records &
+    Passed / Partially Completed / Failed \\
+    \hline
+
+    UAT-02 &
+    TC-ADM-001, TC-ADM-002, TC-ADM-003 &
+    Manage tenants, users, and API keys. &
+    Tenant records, user assignments, and API key actions are completed
+    successfully and reflected correctly in the interface and audit trail. &
+    Screenshots, audit entries &
+    Passed / Partially Completed / Failed \\
+    \hline
+
+    UAT-03 &
+    TC-ADM-003, TC-ADM-004, TC-ADM-005 &
+    Manage security and monitoring settings. &
+    YARA and ClamAV related actions complete successfully, system health is
+    visible, and audit logs can be reviewed or exported as intended. &
+    Screenshots, logs, export output &
+    Passed / Partially Completed / Failed \\
+    \hline
+
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{User acceptance success criteria for System Administrator}
+  \label{tab:uat-success-admin}
+\end{table}
+
+% =========================================================
+% Tenant Administrator UAT
+% =========================================================
+\begin{table}[H]
+  \centering
+  \smalltable
+  \scriptsize
+  {%
+  \setlength{\tabcolsep}{3pt}
+  \renewcommand{\arraystretch}{1.18}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.09\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.15\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.22\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.30\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.14\textwidth}|
+                  >{\centering\arraybackslash}p{0.10\textwidth}|}
+    \hline
+    \textbf{UAT ID} &
+    \textbf{Linked TC ID(s)} &
+    \textbf{Task} &
+    \textbf{Success criteria for passed result} &
+    \textbf{Evidence} &
+    \textbf{Result} \\
+    \hline\hline
+
+    UAT-04 &
+    TC-REG-001, TC-REG-003, TC-REG-004, TC-REG-005 &
+    Upload and manage report files. &
+    Valid file operations complete successfully, reports are associated
+    correctly, CID and QR data are available, and file records appear with the
+    correct status. &
+    Upload output, screenshots, resulting record &
+    Passed / Partially Completed / Failed \\
+    \hline
+
+    UAT-05 &
+    TC-REG-002, TC-REG-006 &
+    Handle invalid file actions and restricted modification paths. &
+    Invalid or rejected actions show clear system responses, and no improper
+    content modification path is exposed through normal user actions. &
+    Screenshots, error output &
+    Passed / Partially Completed / Failed \\
+    \hline
+
+    UAT-06 &
+    TC-REG-003, TC-REG-005 &
+    Manage related student or integrator records. &
+    Student or integrator information can be viewed and managed correctly, and
+    related records remain visible and consistent in the interface. &
+    Screenshots, updated records &
+    Passed / Partially Completed / Failed \\
+    \hline
+
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{User acceptance success criteria for Tenant Administrator}
+  \label{tab:uat-success-tenant}
+\end{table}
+
+% =========================================================
+% IT Integrator UAT
+% =========================================================
+\begin{table}[H]
+  \centering
+  \smalltable
+  \scriptsize
+  {%
+  \setlength{\tabcolsep}{3pt}
+  \renewcommand{\arraystretch}{1.18}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.09\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.15\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.22\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.30\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.14\textwidth}|
+                  >{\centering\arraybackslash}p{0.10\textwidth}|}
+    \hline
+    \textbf{UAT ID} &
+    \textbf{Linked TC ID(s)} &
+    \textbf{Task} &
+    \textbf{Success criteria for passed result} &
+    \textbf{Evidence} &
+    \textbf{Result} \\
+    \hline\hline
+
+    UAT-07 &
+    TC-ITO-001, TC-ITO-002, TC-ITO-003, TC-ITO-004, TC-ITO-005 &
+    Execute the intended API integration workflow. &
+    Valid API requests return the expected identifiers, metadata, download, or
+    status results, while invalid requests are rejected without creating an
+    unintended record. &
+    API responses, logs &
+    Passed / Partially Completed / Failed \\
+    \hline
+
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{User acceptance success criteria for IT Integrator / Developer}
+  \label{tab:uat-success-integrator}
+\end{table}
+
+% =========================================================
+% External Verifier UAT
+% =========================================================
+\begin{table}[H]
+  \centering
+  \smalltable
+  \scriptsize
+  {%
+  \setlength{\tabcolsep}{3pt}
+  \renewcommand{\arraystretch}{1.18}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.09\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.15\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.22\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.30\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.14\textwidth}|
+                  >{\centering\arraybackslash}p{0.10\textwidth}|}
+    \hline
+    \textbf{UAT ID} &
+    \textbf{Linked TC ID(s)} &
+    \textbf{Task} &
+    \textbf{Success criteria for passed result} &
+    \textbf{Evidence} &
+    \textbf{Result} \\
+    \hline\hline
+
+    UAT-08 &
+    TC-STU-001, TC-STU-003, TC-EXT-001, TC-EXT-002, TC-E2E-002, TC-E2E-003 &
+    Verify a report through the public portal using QR code or CID entry. &
+    The public portal displays the correct result for valid, invalid,
+    tampered, or unavailable cases without requiring internal access and
+    without exposing sensitive internal details. &
+    Screenshots, scan proof, portal output &
+    Passed / Partially Completed / Failed \\
+    \hline
+
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{User acceptance success criteria for External Verifier}
+  \label{tab:uat-success-verifier}
+\end{table}
+
+During user testing, each participant will receive a task script derived from
+the UAT table corresponding to the participant's assigned role. The script
+will describe the initial state, the assigned task, and the expected result.
+Observers will record task completion, time taken, defects encountered, and
+any task blockers observed during execution.
+
+User acceptance testing will be considered satisfactory when assigned tasks
+are completed successfully, expected results are observed, critical defects
+are resolved, and regression re-testing confirms that fixes do not introduce
+new failures. At least 90\% of critical UAT tasks should be completed
+without assistance for each user group before acceptance is concluded.
+
+\subsubsection{User acceptance result classification}
+
+For user acceptance testing, each scenario will be recorded using one of the
+following outcome labels.
+
+\begin{table}[H]
+  \centering
+  \smalltable
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{6pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.24\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.66\textwidth}|}
+    \hline
+    \textbf{Outcome label} & \textbf{Definition} \\
+    \hline\hline
+
+    \textbf{Passed} &
+    The participant completes the assigned task successfully and the expected
+    result is observed. \\
+    \hline
+
+    \textbf{Partially Completed} &
+    The participant completes part of the assigned task, but encounters minor
+    defects, incomplete behaviour, or non-blocking issues during execution. \\
+    \hline
+
+    \textbf{Failed} &
+    The participant cannot complete the assigned task, or the observed result
+    does not satisfy the expected result for the intended role. \\
+    \hline
+
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{User acceptance test result classification}
+  \label{tab:uat-result-classification}
+\end{table}
+
+These outcome labels will be recorded together with task
+evidence, and any defects identified during the session.
+
+\subsection{Security Testing}
+
+Security evaluation for VERACISM will focus on protecting the
+confidentiality, integrity, and availability of data in line with ISM
+security policies. In particular, the system is expected to meet the
+following security targets:
+
+\begin{itemize}
+  \item All network traffic uses HTTPS with current TLS versions;
+  \item Passwords and secrets are never logged or exposed in client responses;
+  \item Input validation and output encoding are applied to all external interfaces;
+  \item The system is regularly scanned for vulnerabilities and no critical or high
+        severity findings remain unresolved beyond agreed timelines.
+\end{itemize}
+
+VERACISM will be subjected to Vulnerability Assessment and Penetration Testing
+(VAPT) before the initial go-live and after any significant change that may
+affect its security posture. The target of the assessment is the VERACISM web
+application and APIs, reachable under the staging URL
+\texttt{https://sb-[update-domain-if-needed]} (to be confirmed). Test
+credentials will be provisioned securely (for example, via encrypted email or
+a password manager). Systems, subdomains, and third-party services not
+explicitly included in the scope will remain out of scope.
+
+\begin{table}[htbp]
+  \centering
+  \smalltable
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{8pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{3.6cm}|
+                  >{\raggedright\arraybackslash}p{4.4cm}|
+                  >{\raggedright\arraybackslash}p{4.4cm}|}
+    \hline
+    \textbf{Planned security activity} &
+    \textbf{Tools (examples)} &
+    \textbf{Objective / scope} \\
+    \hline\hline
+
+    Automated vulnerability scanning &
+    Burpsuite &
+    Discover CVEs, open ports and services, misconfigurations, weak defaults,
+    outdated components, and common web issues such as XSS, SQL injection,
+    CSRF, and insecure headers. \\
+    \hline
+
+    Dynamic application scan (DAST) &
+    Burpsuite &
+    Scan the VERACISM web application and APIs (login, upload, verification
+    portal, internal console) under authenticated and unauthenticated sessions. \\
+    \hline
+
+    Manual verification of findings &
+    Manual review using browser tools and scripts &
+    Remove false positives from automated scans and assess real impact and
+    exploitability of each issue in the context of VERACISM. \\
+    \hline
+
+    Manual penetration testing &
+    Custom payloads and test harnesses aligned with OWASP Top 10 &
+    Perform targeted testing of high-risk flows and endpoints, based on the
+    focus areas in Table~\ref{table:owasp-focus}. \\
+    \hline
+
+    Continuous dependency and image scanning (post-deployment) &
+    Snyk or an ISM-approved equivalent integrated in CI/CD &
+    Detect vulnerable libraries, container images, and IaC templates over time
+    and feed findings into ISM's vulnerability management process. \\
+    \hline
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{Planned security testing activities for VERACISM}
+  \label{table:security-testing-plan}
+\end{table}
+
+\begin{table}[htbp]
+  \centering
+  \smalltable
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{6pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{1.5cm}|
+                  >{\raggedright\arraybackslash}p{4.0cm}|
+                  >{\raggedright\arraybackslash}p{6.9cm}|}
+    \hline
+    \textbf{OWASP ID} &
+    \textbf{Risk name} &
+    \textbf{Planned focus in VERACISM} \\
+    \hline\hline
+
+    A01 &
+    Broken Access Control &
+    Verify RBAC/ABAC enforcement, least privilege for service accounts, and
+    strict access restrictions on reports, admin pages, and APIs. \\
+    \hline
+
+    A02 &
+    Cryptographic Failures &
+    Check HTTPS/TLS configuration, key and secret handling, and correct usage
+    of hashing (SHA-256) and encryption where required. \\
+    \hline
+
+    A03 &
+    Injection &
+    Confirm use of parameterized queries and ORM; test all inputs for SQL,
+    command, and template injection. \\
+    \hline
+
+    A04 &
+    Insecure Design &
+    Review threat model, design of immutability and auditability, and presence
+    of required security controls in high-risk flows. \\
+    \hline
+
+    A05 &
+    Security Misconfiguration &
+    Test for insecure defaults, missing security headers, verbose error messages,
+    open ports, and weak configuration in .NET, MSSQL, and hosting. \\
+    \hline
+
+    A06 &
+    Vulnerable and Outdated Components &
+    Confirm that dependency scans are running and that findings in .NET,
+    Angular/React, and IPFS/Filecoin libraries are addressed. \\
+    \hline
+
+    A07 &
+    Identification and Authentication Failures &
+    Test login flows, token handling, session timeout, brute-force resistance,
+    and integration with the ISM identity provider. \\
+    \hline
+
+    A08 &
+    Software and Data Integrity Failures &
+    Validate CI/CD controls, integrity of deployed artifacts, and that report
+    hashes and CIDs reliably detect unauthorized changes. \\
+    \hline
+
+    A09 &
+    Security Logging and Monitoring Failures &
+    Confirm that authentication, access control, upload, download, and
+    verification events are logged and integrated with monitoring/alerting. \\
+    \hline
+
+    A10 &
+    Server-Side Request Forgery (SSRF) &
+    Test outbound calls (Lighthouse, IPFS gateways, explorers) against
+    allow-lists and ensure no user-controlled URLs are used. \\
+    \hline
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{OWASP Top 10 focus areas for VERACISM penetration testing}
+  \label{table:owasp-focus}
+\end{table}
+
+\clearpage
+The overall VAPT procedure for VERACISM will follow these steps:
+
+\begin{enumerate}
+  \item \textbf{Information gathering}  
+        Collect details about infrastructure, technology stack, exposed
+        services, and endpoints; define the attack surface for the web
+        application and APIs.
+
+  \item \textbf{Automated vulnerability scanning}  
+        Run network and application scans using the tools in
+        Table~\ref{table:security-testing-plan}. The objective is to identify:
+        \begin{itemize}
+          \item known CVEs in platforms and libraries;
+          \item open ports and exposed services;
+          \item misconfigurations and weak defaults;
+          \item outdated software components;
+          \item web vulnerabilities such as XSS, SQL injection, CSRF, and missing or
+                insecure HTTP headers.
+        \end{itemize}
+
+  \item \textbf{Manual verification of findings}  
+        Manually review automated results to eliminate false positives and to
+        understand how each issue behaves on a running VERACISM instance.
+
+  \item \textbf{Manual security testing}  
+        Perform targeted tests on the affected flows and endpoints using safe,
+        non-destructive payloads. For each confirmed finding, record severity,
+        reproduction steps, payloads, and technical evidence (e.g., screenshots
+        and logs).
+
+  \item \textbf{Penetration testing focus areas}  
+        Apply the OWASP Top 10 focus areas summarized in
+        Table~\ref{table:owasp-focus} to ensure that access control, crypto,
+        input handling, configuration, components, logging, and outbound calls
+        are all tested in depth.
+
+  \item \textbf{Remediation and re-testing}  
+        Provide detailed technical findings and remediation guidance to the
+        development and operations teams. After fixes are applied, perform
+        re-tests to confirm that vulnerabilities are closed and that remediation
+        has not introduced new security issues.
+
+  \item \textbf{Reporting}  
+        Produce a formal VAPT report containing all verified vulnerabilities,
+        their severity and potential impact, reproduction details, and
+        recommended remediation actions. Store reports and re-test results as
+        evidence for audits and future reviews.
+\end{enumerate}
+
+Optionally, security assessment may be combined with load testing using Azure
+Load Testing or an equivalent tool. In this mode, realistic user load will be
+applied to VERACISM while security controls (rate limiting, throttling, and
+brute-force protections) are observed under stress.
+
+To keep VERACISM secure over time, continuous monitoring with dependency and
+image scanning tools is recommended. Findings from these tools will be handled
+under ISM's vulnerability management process.
+
+Security acceptance criteria for the project are:
+
+\begin{itemize}
+  \item All Critical and High vulnerabilities identified in VAPT or automated
+        scans must be fixed or formally risk-accepted by ISM Information
+        Security before production release;
+  \item Medium and Low issues must have a documented remediation plan and
+        target date;
+  \item VAPT reports, scan results, and re-test outcomes must be retained as
+        evidence for audits and internal reviews.
+\end{itemize}

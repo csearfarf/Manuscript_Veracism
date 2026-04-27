@@ -1,0 +1,740 @@
+% Results and Discussion: VERACISM
+
+\section{RESULTS AND DISCUSSION}
+
+This section presents and discusses the outcomes of the four testing categories
+conducted to evaluate the VERACISM platform: (1)~functional testing,
+(2)~integration testing, (3)~performance testing, (4)~security testing, and
+(5)~user acceptance testing.
+Complete raw data for each category is reproduced in the appendices: detailed
+assertion level tables appear in Appendices~\ref{appendix:integration-tests}
+and \ref{appendix:functional-tests}; security findings in
+Appendix~\ref{appendix:security}; performance configuration in
+Appendix~\ref{appendix:performance}; and the full original test report PDFs
+in Appendices~\ref{appendix:pdf-functional}
+through~\ref{appendix:pdf-security-remediation}.
+
+% ----------------------------------------------------------
+\subsection{Functional and Integration Testing}
+% ----------------------------------------------------------
+
+Functional and integration testing was carried out using the hybrid approach
+defined in the Project Assessment chapter: automated black box API testing via
+Newman and manual role based functional verification. The two streams used a
+common scenario set, with automation applied where API calls could be scripted
+and manual execution applied where validation required business logic or user
+interface inspection.
+
+\subsubsection{Automated test suite summary}
+
+The automated Integration Test Suite targeted five endpoint groups of the
+external VERACISM~API~v1: scan upload, report retrieval by CID, public
+verification, controlled download, and storage status check.  A total of
+22 test cases comprising 93~individual assertions were executed against the
+staging environment at \texttt{https://sb-api.ismanila.org/Veracism}.  The
+Functional Test Suite covered four user role groups in 19 automated suites
+comprising 89~assertions.  Both suites achieved a \textbf{100\% pass rate}
+with zero failures and zero errors.
+Table~\ref{tab:combined-test-summary} presents the combined statistics.
+
+\begin{table}[H]
+  \vspace{2ex}
+  \centering
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{6pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.30\textwidth}|
+                  >{\centering\arraybackslash}p{0.13\textwidth}|
+                  >{\centering\arraybackslash}p{0.13\textwidth}|
+                  >{\centering\arraybackslash}p{0.10\textwidth}|
+                  >{\centering\arraybackslash}p{0.10\textwidth}|
+                  >{\centering\arraybackslash}p{0.13\textwidth}|}
+    \hline
+    \textbf{Suite} & \textbf{Test Cases} & \textbf{Assertions} & \textbf{Passed} & \textbf{Failed} & \textbf{Pass Rate} \\
+    \hline\hline
+    Integration Test Suite & 22 & 93 & 93 & 0 & 100.0\% \\
+    \hline
+    Functional Test Suite & 19 & 89 & 89 & 0 & 100.0\% \\
+    \hline
+    \textbf{Combined Total} & \textbf{41} & \textbf{182} & \textbf{182} & \textbf{0} & \textbf{100.0\%} \\
+    \hline
+  \end{tabular}
+  }%
+  \vspace{2ex}
+  \captionsetup{type=table}
+  \caption{Combined automated test results: Integration and Functional suites (30--31 March 2026)}
+  \label{tab:combined-test-summary}
+\end{table}
+
+\subsubsection{Integration suite by endpoint group}
+
+Table~\ref{tab:int-group-breakdown} disaggregates the 93~integration assertions
+into the five endpoint groups under test, together with the total execution
+time recorded by the Newman runner.  The Scan Upload group accounts for the
+majority of elapsed time (\textbf{83.7\%} of the 83.7-second total run) because
+each upload call invokes the full document pipeline: SHA-256 computation,
+ClamAV and YARA scanning, Lighthouse encryption, and IPFS anchoring.
+
+\begin{table}[H]
+  \vspace{2ex}
+  \centering
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{6pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.29\textwidth}|
+                  >{\centering\arraybackslash}p{0.09\textwidth}|
+                  >{\centering\arraybackslash}p{0.11\textwidth}|
+                  >{\centering\arraybackslash}p{0.07\textwidth}|
+                  >{\centering\arraybackslash}p{0.07\textwidth}|
+                  >{\centering\arraybackslash}p{0.11\textwidth}|
+                  >{\centering\arraybackslash}p{0.10\textwidth}|}
+    \hline
+    \textbf{Endpoint Group} & \textbf{TCs} & \textbf{Assertions} & \textbf{Pass} & \textbf{Fail} & \textbf{Time (s)} & \textbf{\% of Run} \\
+    \hline\hline
+    Scan Upload & 8 & 37 & 37 & 0 & 77.969 & 93.1\% \\
+    \hline
+    Get Report by CID & 4 & 17 & 17 & 0 & 0.307 & 0.4\% \\
+    \hline
+    Verify (Public) & 4 & 18 & 18 & 0 & 0.230 & 0.3\% \\
+    \hline
+    Download & 3 & 12 & 12 & 0 & 6.014 & 7.2\% \\
+    \hline
+    Storage Status & 3 & 11 & 11 & 0 & 0.163 & 0.2\% \\
+    \hline
+    \textbf{TOTAL} & \textbf{22} & \textbf{93} & \textbf{93} & \textbf{0} & \textbf{83.728} & \textbf{100\%} \\
+    \hline
+  \end{tabular}
+  }%
+  \vspace{2ex}
+  \captionsetup{type=table}
+  \caption{Integration test suite results by endpoint group (full assertion detail in Appendix~\ref{appendix:integration-tests})}
+  \label{tab:int-group-breakdown}
+\end{table}
+
+\noindent The breakdown highlights an important performance characteristic: once a
+document is anchored to the Lighthouse/IPFS network, subsequent metadata
+retrieval (CID lookup, 0.147~s), public verification (0.066~s), and storage
+status check (0.061~s) all respond well within interactive latency
+expectations.  The upload pipeline itself, at 15--21~seconds per file, is
+inherently bounded by the round trip to the Lighthouse encryption proxy and
+the Filecoin network; this is consistent with expected Lighthouse API latency
+for file anchoring operations.
+
+\subsubsection{Functional suite by automated group}
+
+Table~\ref{tab:func-auto-breakdown} disaggregates the 89 functional assertions
+into the four Newman runner groups: F1~(IT Office API), F2~(Registrar
+Upload), F3~(Public Verification), and F4~(End-to-End Journey).
+The total automated run time was \textbf{116.641~seconds}.
+
+\begin{table}[H]
+  \vspace{2ex}
+  \centering
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{6pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.29\textwidth}|
+                  >{\centering\arraybackslash}p{0.09\textwidth}|
+                  >{\centering\arraybackslash}p{0.11\textwidth}|
+                  >{\centering\arraybackslash}p{0.07\textwidth}|
+                  >{\centering\arraybackslash}p{0.07\textwidth}|
+                  >{\centering\arraybackslash}p{0.11\textwidth}|
+                  >{\centering\arraybackslash}p{0.10\textwidth}|}
+    \hline
+    \textbf{Feature Group} & \textbf{Suites} & \textbf{Assertions} & \textbf{Pass} & \textbf{Fail} & \textbf{Time (s)} & \textbf{\% of Run} \\
+    \hline\hline
+    F1: IT Office API & 5 & 27 & 27 & 0 & 54.231 & 46.5\% \\
+    \hline
+    F2: Registrar Upload & 4 & 20 & 20 & 0 & 39.508 & 33.9\% \\
+    \hline
+    F3: Public Verification & 7 & 28 & 28 & 0 & 21.047 & 18.0\% \\
+    \hline
+    F4: End-to-End Journey & 3 & 14 & 14 & 0 & 1.855 & 1.6\% \\
+    \hline
+    \textbf{TOTAL} & \textbf{19} & \textbf{89} & \textbf{89} & \textbf{0} & \textbf{116.641} & \textbf{100\%} \\
+    \hline
+  \end{tabular}
+  }%
+  \vspace{2ex}
+  \captionsetup{type=table}
+  \caption{Functional test suite automated results by feature group (31 March 2026)}
+  \label{tab:func-auto-breakdown}
+\end{table}
+
+\subsubsection{Manual and code review results by role}
+
+Beyond the automated API assertions, 30 test cases were evaluated in total
+(automated API + manual code review + observational inspection) spanning all
+five user roles defined in the system specification.
+Table~\ref{tab:func-manual-by-role} presents the pass/partial/fail breakdown
+per role group.
+
+\begin{table}[H]
+  \vspace{2ex}
+  \centering
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{6pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.28\textwidth}|
+                  >{\centering\arraybackslash}p{0.08\textwidth}|
+                  >{\centering\arraybackslash}p{0.09\textwidth}|
+                  >{\centering\arraybackslash}p{0.09\textwidth}|
+                  >{\centering\arraybackslash}p{0.09\textwidth}|
+                  >{\centering\arraybackslash}p{0.09\textwidth}|
+                  >{\centering\arraybackslash}p{0.09\textwidth}|}
+    \hline
+    \textbf{Role Group} & \textbf{Total} & \textbf{PASSED} & \textbf{PARTIAL} & \textbf{FAILED} & \textbf{N/T} & \textbf{Pass \%} \\
+    \hline\hline
+    System Administrator (TC-ADM) & 5 & 5 & 0 & 0 & 0 & 100.0\% \\
+    \hline
+    IT Office Staff (TC-ITO) & 6 & 4 & 1 & 1 & 0 & 66.7\% \\
+    \hline
+    Registrar / Admin Office (TC-REG) & 7 & 7 & 0 & 0 & 0 & 100.0\% \\
+    \hline
+    Student (TC-STU) & 5 & 5 & 0 & 0 & 0 & 100.0\% \\
+    \hline
+    External Auditor / Educator (TC-EXT) & 4 & 4 & 0 & 0 & 0 & 100.0\% \\
+    \hline
+    Cross-Role End-to-End (TC-E2E) & 3 & 2 & 1 & 0 & 0 & 66.7\% \\
+    \hline
+    \textbf{OVERALL} & \textbf{30} & \textbf{27} & \textbf{2} & \textbf{1} & \textbf{0} & \textbf{90.0\%} \\
+    \hline
+  \end{tabular}
+  }%
+  \vspace{2ex}
+  \captionsetup{type=table}
+  \caption{Functional test results by user role (N/T = not tested in this cycle; full detail in Appendix B, Tables~\ref{tab:func-adm} through~\ref{tab:func-e2e})}
+  \label{tab:func-manual-by-role}
+\end{table}
+
+\noindent The three role groups most critical to the system's value proposition,
+System Administrator, Registrar/Admin Office, and External Auditor, achieved
+\textbf{100\% pass rates} with no failures or partial results.  The IT Office
+group recorded the lowest rate (66.7\%) due to the single failure (TC-ITO-005)
+and one partial result (TC-ITO-006).
+
+\subsubsection{Open defects summary}
+
+Three defects were surfaced by the manual and code review phase.
+Table~\ref{tab:func-defects} summarises each defect, its severity, and its
+disposition.
+
+\begin{table}[H]
+  \vspace{2ex}
+  \centering
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{5pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\centering\arraybackslash}p{0.10\textwidth}|
+                  >{\centering\arraybackslash}p{0.08\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.20\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.34\textwidth}|
+                  >{\centering\arraybackslash}p{0.12\textwidth}|}
+    \hline
+    \textbf{TC ID} & \textbf{Severity} & \textbf{Title} & \textbf{Description} & \textbf{Disposition} \\
+    \hline\hline
+    TC-ITO-005 & Medium & No Lighthouse retry policy & No Polly retry or circuit breaker on \texttt{LighthouseStorageService}; transient unavailability causes immediate failure with no backoff & Future Work \\
+    \hline
+    TC-ITO-006 & Low & Scoped audit log UI incomplete & \texttt{AuditEvent} table has no C\# model, repository, or controller; tenant scoped audit UI cannot be rendered & Future Work \\
+    \hline
+    TC-E2E-003 & Medium & VerificationLog not written & \texttt{VerificationLog} table exists in schema but \texttt{VerifyController} does not persist a log entry on each \texttt{GET /verify} call & Future Work \\
+    \hline
+  \end{tabular}
+  }%
+  \vspace{2ex}
+  \captionsetup{type=table}
+  \caption{Open defects identified during functional testing: all scoped to future development sprint}
+  \label{tab:func-defects}
+\end{table}
+
+\subsubsection{Key functional findings}
+
+The following system behaviours were confirmed by the combined testing programme:
+
+\begin{enumerate}
+  \item \textbf{Core pipeline is fully end to end functional.}  TC-E2E-001
+    demonstrated that the complete upload to verify workflow: file submission,
+    SHA-256 computation, threat scanning, Lighthouse anchoring, CID generation,
+    and unauthenticated public verification: succeeds in a single automated
+    run with \texttt{sha256Match: true} and \texttt{inLighthouse: true}.
+
+  \item \textbf{Multi-engine threat detection gates function correctly.}
+    TC-07A confirmed that a JPG embedding a webshell signature is flagged by
+    the YARA engine (rule: \texttt{image\_webshell\_signature}) and blocked
+    from Lighthouse upload, while ClamAV reports the same file as clean,
+    demonstrating the value of the multi engine approach.
+
+  \item \textbf{SHA-256 integrity is maintained end to end.}  The hash
+    computed at upload (TC-ITO-001) is retrievable via the report endpoint
+    (TC-ITO-003) and confirmed by the public verification endpoint
+    (TC-E2E-001), covering the full document lifecycle.
+
+  \item \textbf{Tenant data isolation prevents enumeration.}  TC-11 confirmed
+    that a CID owned by a different tenant returns HTTP~404, not HTTP~403,
+    preventing an authenticated attacker from inferring the existence of
+    cross tenant documents.
+
+  \item \textbf{Authentication and authorisation boundaries are correctly
+    enforced.}  All protected endpoints rejected requests with invalid or
+    missing tokens (HTTP~401/403).  The public verification endpoint returned
+    HTTP~200 without any credentials (TC-EXT-001, TC-15).
+
+  \item \textbf{Document immutability is enforced at the API level.}  No
+    PUT or DELETE endpoints exist for report records (TC-REG-006); the API
+    is append only by design, matching the tamper evident guarantee.
+
+  \item \textbf{Tampered-document detection is reliable.}  A fabricated CID
+    (TC-E2E-002) returned HTTP~404 with a descriptive message and no
+    false positive verification result.
+\end{enumerate}
+
+% ----------------------------------------------------------
+\subsection{Performance Testing}
+% ----------------------------------------------------------
+
+Performance testing was conducted using Postman's Performance Testing feature
+targeting the public CID verification endpoint
+(\texttt{GET /api/v1/verify?cid=\{cid\}}), which is the endpoint most
+exposed to external concurrent traffic in the production workload.  Two
+rounds were executed, differing only in whether the Nginx reverse proxy
+rate limiting policy was active.
+
+\subsubsection{Test configuration and scope}
+
+Both rounds used 100 virtual users (VUs) sustained for a 5-minute (300-second)
+window, meaning the test engine attempted to drive \textbf{up to 30,000
+requests} during each run at sustained concurrency.
+Table~\ref{tab:perf-config-detail} summarises the configuration of both rounds.
+
+\begin{table}[H]
+  \vspace{2ex}
+  \centering
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{6pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.31\textwidth}|
+                  >{\centering\arraybackslash}p{0.26\textwidth}|
+                  >{\centering\arraybackslash}p{0.26\textwidth}|}
+    \hline
+    \textbf{Parameter} & \textbf{Version 1.0 (2026-03-28)} & \textbf{Version 1.1 (2026-03-30)} \\
+    \hline\hline
+    Target endpoint & \multicolumn{2}{c|}{\texttt{GET /api/v1/verify?cid=\{cid\}}} \\
+    \hline
+    Virtual users (VUs) & 100 & 100 \\
+    \hline
+    Test duration & 5 minutes & 5 minutes \\
+    \hline
+    Infrastructure rate limiting & \textbf{Enabled} (Nginx default) & \textbf{Disabled} (rate-limit rules removed) \\
+    \hline
+    Error source identified & HTTP~429 Too Many Requests from Nginx proxy & No infrastructure throttle \\
+    \hline
+    Application layer result & Not reachable under sustained load & Successfully handled concurrent load \\
+    \hline
+  \end{tabular}
+  }%
+  \vspace{2ex}
+  \captionsetup{type=table}
+  \caption{Performance test configuration and run conditions (full PDF reports in Appendices~\ref{appendix:pdf-perf-v10} and~\ref{appendix:pdf-perf-v11})}
+  \label{tab:perf-config-detail}
+\end{table}
+
+\subsubsection{Key performance findings}
+
+Table~\ref{tab:perf-findings} presents the principal observations and their
+implications for production deployment.
+
+\begin{table}[H]
+  \vspace{2ex}
+  \centering
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{5pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.25\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.26\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.26\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.13\textwidth}|}
+    \hline
+    \textbf{Metric / Observation} & \textbf{Version 1.0 Result} & \textbf{Version 1.1 Result} & \textbf{Root Cause} \\
+    \hline\hline
+    Error rate & \textbf{Significantly elevated}; dominant error was HTTP~429 (rate-limit exceeded) returned by Nginx before requests reached the backend & \textbf{Significantly reduced}; errors largely eliminated once Nginx throttle removed & Nginx rate-limit threshold set below 100-VU load level \\
+    \hline
+    Average response time & Higher; most latency was queuing delay at the proxy level, not application processing time & Lower; requests reached the .NET~8 backend directly with minimal queuing overhead & Infrastructure configuration, not application code \\
+    \hline
+    Throughput (req/s) & Constrained by HTTP~429 rejection at proxy; effective throughput well below 100-VU potential & Higher and stable; application layer did not become a bottleneck during the 5-minute run & Rate-limit rules \\
+    \hline
+    Application layer & Healthy; .NET~8 backend and SQL~Server correctly processed all requests that passed the proxy & Confirmed healthy under 100-VU sustained concurrent load & Application architecture is sound \\
+    \hline
+    Key implication & Rate-limiting thresholds must be re-tuned before go-live to reflect legitimate concurrent usage patterns & Baseline confirmed: application can sustain 100-VU load; tune rate-limiter, do not remove it & Production config action required \\
+    \hline
+  \end{tabular}
+  }%
+  \vspace{2ex}
+  \captionsetup{type=table}
+  \caption{Performance test key findings across Version 1.0 and Version 1.1}
+  \label{tab:perf-findings}
+\end{table}
+
+\noindent Version~1.0 of the performance test revealed that the Nginx reverse proxy
+rate limiting policy had been configured at a threshold below what
+100~simultaneous virtual users required, causing the proxy to return
+HTTP~429 (Too~Many~Requests) before requests ever reached the .NET~8
+application server.  This was confirmed by disabling the rate limiting rules
+for Version~1.1, after which the error rate dropped substantially.
+
+This finding is operationally significant: the rate limiting layer is a
+necessary security control (it protects against denial-of-service and
+credential stuffing attacks), and it should \textit{not} be permanently
+removed.  Rather, the threshold values must be tuned to permit the expected
+peak concurrent-user volume while still blocking anomalously high request
+rates.  The performance testing exercise itself demonstrated the value of
+load testing under realistic concurrency conditions, surfacing a configuration
+gap that would have directly impaired the user experience under production
+load but would not have been detectable through functional or security testing
+alone.
+
+Full numeric metrics, including request counts, P50/P95 response time
+percentiles, throughput graphs, and per second error-rate charts, are
+reproduced verbatim in Appendix~\ref{appendix:pdf-perf-v10}
+(Version~1.0) and Appendix~\ref{appendix:pdf-perf-v11} (Version~1.1).
+
+% ----------------------------------------------------------
+\subsection{User Acceptance Testing}
+% ----------------------------------------------------------
+
+User acceptance testing was conducted using individual role-scoped task
+scripts collected through a structured Google Form
+(\textit{Veracism UAT Form.pdf}).  Each participant completed
+only the UAT items assigned to their selected role; blank columns in
+unassigned roles are intentional and are excluded from scoring.  The UAT
+cycle covered four participant roles: System Administrator, Tenant
+Administrator, IT Integrator / Developer, and External Verifier.
+
+\subsubsection{UAT participants and scope}
+
+Table~\ref{tab:uat-participants} summarises the 10 participants, their
+assigned roles, and the UAT items each role was expected to complete.
+
+\begin{table}[H]
+  \vspace{2ex}
+  \centering
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{6pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.30\textwidth}|
+                  >{\centering\arraybackslash}p{0.11\textwidth}|
+                  >{\centering\arraybackslash}p{0.23\textwidth}|
+                  >{\centering\arraybackslash}p{0.18\textwidth}|}
+    \hline
+    \textbf{Role} & \textbf{Participants} & \textbf{UAT Cases Assigned} & \textbf{Evaluations Recorded} \\
+    \hline\hline
+    System Administrator & 1 & UAT-01, UAT-02, UAT-03 & 3 \\
+    \hline
+    Tenant Administrator & 2 & UAT-04, UAT-05, UAT-06 & 6 \\
+    \hline
+    IT Integrator / Developer & 2 & UAT-07 & 2 \\
+    \hline
+    External Verifier & 5 & UAT-08 & 5 \\
+    \hline
+    \textbf{TOTAL} & \textbf{10} & \textbf{8 unique UAT IDs} & \textbf{16} \\
+    \hline
+  \end{tabular}
+  }%
+  \vspace{2ex}
+  \captionsetup{type=table}
+  \caption{UAT participant distribution by role and assigned task scope}
+  \label{tab:uat-participants}
+\end{table}
+
+\subsubsection{UAT results by role}
+
+Table~\ref{tab:uat-by-role} presents the pass, partial, and fail breakdown
+per role group across all recorded evaluations.
+
+\begin{table}[H]
+  \vspace{2ex}
+  \centering
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{6pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.28\textwidth}|
+                  >{\centering\arraybackslash}p{0.16\textwidth}|
+                  >{\centering\arraybackslash}p{0.09\textwidth}|
+                  >{\centering\arraybackslash}p{0.09\textwidth}|
+                  >{\centering\arraybackslash}p{0.09\textwidth}|
+                  >{\centering\arraybackslash}p{0.09\textwidth}|}
+    \hline
+    \textbf{Role} & \textbf{Evaluations} & \textbf{Passed} & \textbf{Partial} & \textbf{Failed} & \textbf{Pass \%} \\
+    \hline\hline
+    System Administrator & 3 & 2 & 1 & 0 & 66.7\% \\
+    \hline
+    Tenant Administrator & 6 & 6 & 0 & 0 & 100.0\% \\
+    \hline
+    IT Integrator / Developer & 2 & 2 & 0 & 0 & 100.0\% \\
+    \hline
+    External Verifier & 5 & 5 & 0 & 0 & 100.0\% \\
+    \hline
+    \textbf{OVERALL} & \textbf{16} & \textbf{15} & \textbf{1} & \textbf{0} & \textbf{93.8\%} \\
+    \hline
+  \end{tabular}
+  }%
+  \vspace{2ex}
+  \captionsetup{type=table}
+  \caption{UAT results by participant role (role-scoped; blank columns in unassigned roles excluded)}
+  \label{tab:uat-by-role}
+\end{table}
+
+\noindent Three roles -- Tenant Administrator, IT Integrator, and External Verifier --
+achieved a \textbf{100\% pass rate} across all their assigned evaluations.
+The System Administrator role recorded the only partial result (UAT-01).
+The participant confirmed that all dashboard summary statistics loaded
+successfully without error, but noted the following usability suggestion:
+\textit{``Summary of information that can be seen in the system were loaded
+successfully without any error. Should include redirect links for every
+summary (more details or view full report).''}  This feedback is recorded as
+a low-severity usability enhancement request and is scoped to the next
+development phase, where clickable navigation links from each dashboard
+summary card to the corresponding detail or report view will be added.
+UAT-02 and UAT-03, covering user and configuration management, both passed
+fully.
+
+\subsubsection{Key UAT findings}
+
+The following behaviours were confirmed by participant responses:
+
+\begin{enumerate}
+  \item \textbf{Public document verification is universally accessible.}
+    All five External Verifier participants (UAT-08) confirmed that document
+    verification via CID is functional without an account, with one participant
+    noting the experience as ``Excellent'' in their remarks.
+
+  \item \textbf{Tenant upload and file management workflows are accepted.}
+    Both Tenant Administrator participants confirmed UAT-04, UAT-05, and
+    UAT-06 passed fully.  Tenant records, user assignments, and API key
+    configuration were correctly reflected in the interface and audit trail.
+
+  \item \textbf{IT Integrator API access is functional.}
+    Both IT Integrator participants confirmed UAT-07 passed, validating that
+    authenticated API upload integration and metadata retrieval operate as
+    expected for programmatic consumers.
+
+  \item \textbf{Administrator dashboard requires a usability improvement.}
+    UAT-01 was partially completed by the System Administrator participant.
+    The participant confirmed all data rendered without error and provided the
+    following constructive suggestion: \textit{``Should include redirect links
+    for every summary (more details or view full report).''}  This targeted
+    feedback will be incorporated in the next development phase by adding
+    navigation links from each dashboard summary card directly to the
+    corresponding detail view or full report page.
+
+  \item \textbf{All 8 UAT IDs received at least one response.}
+    Every task defined across all roles was covered within the 10-participant
+    cohort, confirming full scenario coverage in the UAT cycle.
+\end{enumerate}
+
+Full response data is recorded in
+Appendix~\ref{appendix:uat-results}.
+
+% ----------------------------------------------------------
+\subsection{Security Testing}
+% ----------------------------------------------------------
+
+Security evaluation proceeded in two phases: an initial dynamic application
+security test (DAST) using Burp Suite Community Edition, and a targeted manual
+code review and penetration-verification pass against each flagged finding.
+The full scan report is reproduced in
+Appendix~\ref{appendix:pdf-security-initial} and the remediation report in
+Appendix~\ref{appendix:pdf-security-remediation}.
+
+\subsubsection{Initial DAST scan overview}
+
+The Burp Suite scan of the staging endpoint surfaced findings at multiple
+severity levels.  Table~\ref{tab:dast-overview} summarises each finding
+category and its post-review disposition.
+
+\begin{table}[H]
+  \vspace{2ex}
+  \centering
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{5pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.26\textwidth}|
+                  >{\centering\arraybackslash}p{0.10\textwidth}|
+                  >{\centering\arraybackslash}p{0.10\textwidth}|
+                  >{\centering\arraybackslash}p{0.14\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.23\textwidth}|}
+    \hline
+    \textbf{Finding Type} & \textbf{DAST Sev.} & \textbf{Count} & \textbf{Confidence} & \textbf{Post-Review Disposition} \\
+    \hline\hline
+    SQL Injection & High & 4 & Tentative & \textbf{False positive}: EF Core ORM; proxy returned HTTP~403 for malformed paths \\
+    \hline
+    Reflected XSS & Medium & 1 & Tentative & \textbf{False positive}: Angular output encoding absorbed injected payloads \\
+    \hline
+    Missing security headers & Low & Several & Certain & Partial: HSTS, X-Frame-Options present; cache-control absent on some endpoints \\
+    \hline
+    Backup file disclosure & Informational & Multiple & Certain & No risk: all backup URL patterns 403-gated at IIS; no accessible files \\
+    \hline
+    Email address disclosure & Informational & Multiple & Certain & By design: user email in authenticated admin API responses \\
+    \hline
+    Cacheable HTTPS responses & Informational & Multiple & Certain & Low risk: affects read-only public endpoints only \\
+    \hline
+  \end{tabular}
+  }%
+  \vspace{2ex}
+  \captionsetup{type=table}
+  \caption{Initial Burp Suite DAST findings and post-review dispositions (21 March 2026; full report in Appendix~\ref{appendix:pdf-security-initial})}
+  \label{tab:dast-overview}
+\end{table}
+
+\noindent All four SQL~Injection findings and the reflected XSS finding were determined
+to be false positives on manual code review.  The backend exclusively uses
+Entity Framework Core with LINQ-generated parameterised queries; handwritten
+SQL is absent from the codebase.  The scanner's SQL-injection heuristics were
+triggered by HTTP~403 responses returned by the IIS/Nginx proxy for
+malformed URL paths, not by any mishandling of SQL input in the application.
+
+\subsubsection{Confirmed vulnerabilities and remediation}
+
+Manual code review and targeted penetration testing identified and confirmed
+\textbf{five genuine vulnerabilities} prior to the initial controlled deployment,
+all of severity Medium--High or below.  All five were remediated before
+the deployment date.  Table~\ref{tab:security-detail} presents the full
+summary, including the remediation technique applied to each finding.
+
+\begin{table}[H]
+  \vspace{2ex}
+  \centering
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{5pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\centering\arraybackslash}p{0.07\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.22\textwidth}|
+                  >{\centering\arraybackslash}p{0.11\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.36\textwidth}|
+                  >{\centering\arraybackslash}p{0.10\textwidth}|}
+    \hline
+    \textbf{ID} & \textbf{Vulnerability} & \textbf{Severity} & \textbf{Remediation Applied} & \textbf{Status} \\
+    \hline\hline
+    VUL-01 & Unbounded API Client Data Response & Low & Server-side pagination (\texttt{OFFSET/FETCH}); configurable page/pageSize; max cap of 100/page; response envelope updated & Remediated \\
+    \hline
+    VUL-02 & BOLA on API Client Records (cross tenant read) & Medium--High & Explicit tenant ownership check on GET/PUT/PATCH/DELETE; HTTP~403 for cross tenant reads; admin retains cross tenant access & Remediated \\
+    \hline
+    VUL-03 & Insufficient File Type Validation & Low--Medium & Allowlist of 18 permitted extensions via \texttt{FileValidationHelper}; applied before scanning pipeline; frontend \texttt{accept} attribute updated & Remediated \\
+    \hline
+    VUL-04 & BOLA on Report Records (cross tenant report access) & Medium--High & Tenant ownership check on \texttt{GET /reports/\{id\}}, \texttt{/latest}, and \texttt{/user/\{userId\}}; HTTP~403 for non-owner callers & Remediated \\
+    \hline
+    VUL-05 & Missing Tenant Isolation on File View/Download & Medium--High & \texttt{EnforceTenantOwnershipAsync(cid)} helper in \texttt{VerifyController}; HTTP~403 for non-owner; admin pass-through retained & Remediated \\
+    \hline
+  \end{tabular}
+  }%
+  \vspace{2ex}
+  \captionsetup{type=table}
+  \caption{Confirmed security vulnerabilities and remediation status (full detail in Appendix~\ref{appendix:pdf-security-remediation} and Appendix~\ref{appendix:security}, Table~\ref{tab:security-vulns})}
+  \label{tab:security-detail}
+\end{table}
+
+\noindent Three of the five confirmed vulnerabilities (VUL-02, VUL-04, VUL-05) belonged
+to the Broken Object-Level Authorisation (BOLA) category.  BOLA
+vulnerabilities are particularly consequential for VERACISM because the
+data under protection includes sensitive academic records, transcripts,
+credentials, and institutional identifiers, whose confidentiality is a
+core platform guarantee.  All three BOLA paths have been closed by
+tenant scoped ownership checks at the controller level.
+
+\subsubsection{Security posture summary}
+
+Table~\ref{tab:security-posture} presents a one-page assessment of the
+platform's security posture across key dimensions at the time of initial
+controlled deployment.
+
+\begin{table}[H]
+  \vspace{2ex}
+  \centering
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{5pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.31\textwidth}|
+                  >{\centering\arraybackslash}p{0.12\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.42\textwidth}|}
+    \hline
+    \textbf{Security Dimension} & \textbf{Assessment} & \textbf{Notes} \\
+    \hline\hline
+    Critical / High vulnerabilities & \textbf{None} & No confirmed High or Critical findings at deployment \\
+    \hline
+    Medium--High vulnerabilities (BOLA) & \textbf{Remediated} & VUL-02, VUL-04, VUL-05: all three BOLA paths closed \\
+    \hline
+    SQL injection attack surface & \textbf{Eliminated} & EF Core ORM with parameterised queries throughout; no handwritten SQL \\
+    \hline
+    Authentication (Identity Provider) & \textbf{Strong} & Auth0 JWT Bearer tokens; \texttt{ValidateUserExistsFilter} syncs users into local DB \\
+    \hline
+    Authorisation model & \textbf{Adequate} & \texttt{AdminOnly}, \texttt{TenantOnly}, \texttt{AdminOrTenant} policies; inline controller checks \\
+    \hline
+    Transport security & \textbf{Strong} & HTTPS-only; HSTS headers enforced via Nginx \\
+    \hline
+    File upload safety & \textbf{Good} & ClamAV + YARA + PDF phishing analysis; file-type allowlist (18 extensions) \\
+    \hline
+    Audit trail & \textbf{Partial} & Admin audit export implemented; tenant scoped audit UI deferred (DEF-004) \\
+    \hline
+    Deferred findings & \textbf{2 items} & DEF-01 (partial BOLA on user enumeration) and DEF-02 (nullable warnings); neither is immediately exploitable \\
+    \hline
+  \end{tabular}
+  }%
+  \vspace{2ex}
+  \captionsetup{type=table}
+  \caption{Security posture assessment at initial controlled deployment (March 2026)}
+  \label{tab:security-posture}
+\end{table}
+
+% ----------------------------------------------------------
+\subsection{Overall Discussion}
+% ----------------------------------------------------------
+
+  Taken together, the five testing streams present a consistent picture of a
+system that fulfils its core functional objectives while revealing
+infrastructure level configuration gaps correctable before production
+scale-out.
+
+The \textbf{100\% automated assertion pass rate} across 182~assertions confirms
+that the document verification pipeline, from upload and threat scanning
+through to decentralised storage and public CID based verification, operates
+as designed under normal conditions.  The 90.0\% full-pass rate on the
+30-case manual suite reflects three bounded gaps in non-core subsystems
+(retry logic, audit tooling, and verification logging) that do not compromise
+the integrity or confidentiality of verified documents.
+
+The performance testing exercise surfaced a real operational concern, the
+rate limiting configuration, that would have impaired user experience under
+production load had it not been identified in the testing phase.  The v1.0
+error rate was caused entirely by infrastructure misconfiguration, not
+application defects; v1.1 confirmed the application layer is capable of
+sustaining 100-VU concurrent load.  The finding is correctable with
+configuration changes alone.
+
+The security assessment confirmed that the three most consequential risks
+(cross tenant data access via BOLA) were identified, documented, and fully
+remediated before the initial controlled deployment.  The DevSecOps workflow
+embedded in the development process, combining automated DAST scanning
+with manual code review, was effective at surfacing and closing
+access-control gaps.  The absence of any confirmed Critical or High
+severity vulnerability at deployment demonstrates a security baseline
+appropriate for controlled institutional use.
+
+One systemic observation across both security and functional testing phases
+is that tenant-ownership checks are currently implemented as repeated inline
+logic within individual controllers.  While functionally correct, this
+pattern increases the risk of omission in future endpoint additions.
+Centralising the checks into a shared base controller or a dedicated
+ASP.NET~Core authorisation handler is identified as a recommended
+architectural improvement for the next development phase.
+

@@ -1,0 +1,83 @@
+\section{FUTURE WORK}
+
+This section presents practical next steps that can further strengthen
+VERACISM after the initial controlled deployment. The proposed work focuses on
+resilience, security governance, observability, performance, and standards
+alignment, and it follows the same assessment dimensions defined in the
+Project Assessment baseline.
+
+\subsection{Reliability and Resilience}
+
+The scan and storage flow can be improved by adding a retry policy with
+exponential backoff for transient Lighthouse communication failures.
+Circuit breaker logic can also be added to prevent repeated calls to an
+unhealthy upstream service. A queued upload workflow can further improve
+reliability by allowing temporary buffering and controlled replay when external
+services recover.
+
+\subsection{Functional and Integration Coverage Expansion}
+
+Future cycles should expand automated and manual coverage using the same
+planned test case structure from the Project Assessment chapter. Priority
+areas include deeper UI driven functional checks, broader integration checks
+for service to service failures, and additional evidence capture for pass,
+partial, and fail classifications.
+
+\subsection{Audit and Verification Logging}
+
+Public verification should persist records to the VerificationLog table for
+traceability of every check operation. Audit views should also enforce strict
+tenant scoping in both API responses and user interface filters. This work
+will strengthen accountability and support institutional compliance reviews.
+
+\subsection{Access Control Architecture}
+
+Current tenant ownership checks are effective but distributed across several
+controllers. A shared authorization layer can centralize these checks and
+reduce the risk of omission in future endpoints. Candidate approaches include
+policy based handlers and reusable ownership validation services.
+
+\subsection{Performance and Capacity Expansion}
+
+Future performance studies should include additional endpoints beyond public
+verification, especially the full upload and scanning pipeline under concurrent
+load. Rate limiting thresholds at the reverse proxy should be tuned using
+measured traffic profiles from pilot institutions. Long duration endurance
+tests can also be added to evaluate memory stability and sustained throughput.
+
+The next performance cycle should retain the baseline metrics from the Project
+Assessment chapter so that throughput, percentile latency, and error rate can
+be compared consistently across versions and environments.
+
+\subsection{Security Hardening and Monitoring}
+
+The platform can be extended with continuous security regression testing,
+scheduled dependency review, and automated alerting for abnormal access
+patterns. A centralized security dashboard can combine scan outcomes,
+authorization events, and service health indicators for faster incident
+response.
+
+Future security testing should continue the baseline approach of combining
+automated scanning with manual verification, with stronger traceability from
+each finding to remediation evidence.
+
+\subsection{User Acceptance and Deployment Readiness}
+
+User acceptance testing can be formalized using the role based task scripts
+defined in the Project Assessment chapter for administrators, tenant users,
+integrators, and external verifiers. This will provide stronger deployment
+readiness evidence for institutional onboarding and operational handover.
+
+\subsection{Interoperability and Research Extensions}
+
+Future research can explore interoperability with verifiable credential
+frameworks and education metadata standards to support cross institution
+document exchange. Additional work may also examine privacy preserving
+verification strategies for selective disclosure of student records.
+
+\subsection{Deployment and Adoption Roadmap}
+
+A staged rollout across partner institutions can be used to validate
+governance, onboarding effort, and operational support requirements.
+User training materials, support playbooks, and tenant onboarding templates
+can improve adoption and reduce implementation friction.

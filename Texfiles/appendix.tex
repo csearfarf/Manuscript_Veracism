@@ -1,0 +1,799 @@
+% appendix.tex: VERACISM Test Results Appendices
+% NOTE: \appendix is intentionally omitted -- it conflicts with titlesec in the
+% report class used by is295.cls and causes an infinite loop compile hang.
+% Section titles carry the "APPENDIX X" prefix explicitly instead.
+
+% ============================================================
+\section{APPENDIX A: INTEGRATION TEST SUITE RESULTS}
+\label{appendix:integration-tests}
+% ============================================================
+
+The following tables reproduce the complete assertion level results from the
+VERACISM API v1 Integration Test Suite executed on 30 March 2026 using the
+Newman CLI runner against the staging environment
+(\texttt{https://sb-api.ismanila.org/Veracism}).  All 93 assertions across
+22 test suites passed with zero failures and zero errors.
+
+\subsection*{A.1: Scan Upload (\texttt{POST /api/v1/scan-upload})}
+
+\begin{table}[H]
+  \centering
+  \smalltable
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{5pt}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.07\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.52\textwidth}|
+                  >{\centering\arraybackslash}p{0.12\textwidth}|
+                  >{\centering\arraybackslash}p{0.13\textwidth}|}
+    \hline
+    \textbf{TC ID} & \textbf{Assertion} & \textbf{Result} & \textbf{Time (s)} \\
+    \hline\hline
+    TC-01 & Status 200; SHA-256 is 64-char hex; threatLevel valid; reportId is a number; results array present; requestId (GUID or 32-hex); response time \textless{}30 s & \textbf{PASS} & 20.446 \\
+    \hline
+    TC-02 & Status 200; studentId is non-null when studentNumber provided; response time \textless{}30 s & \textbf{PASS} & 17.321 \\
+    \hline
+    TC-03 & Status 200; versionNumber $\geq$ 2; documentLabel present; response time \textless{}30 s & \textbf{PASS} & 17.392 \\
+    \hline
+    TC-04 & Status 400; error is ``no files''; response time \textless{}30 s & \textbf{PASS} & 0.054 \\
+    \hline
+    TC-05 & Status 401 or 403 for invalid API key; response time \textless{}30 s & \textbf{PASS} & 0.134 \\
+    \hline
+    TC-06 & Status 401 or 403 when no \texttt{X-Api-Key} header; response time \textless{}30 s & \textbf{PASS} & 0.050 \\
+    \hline
+    TC-07 & Status 200; results array present; SHA-256 present for TXT upload; response time \textless{}30 s & \textbf{PASS} & 16.888 \\
+    \hline
+    TC-07A & Status 200; YARA match detected; webshell signature identified; threat level not SAFE; Lighthouse upload blocked; SHA-256 is 64-char hex; response time \textless{}30 s & \textbf{PASS} & 4.734 \\
+    \hline
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{Integration test results: Scan Upload group (37 assertions, 0 failures, 77.969 s)}
+  \label{tab:int-scan-upload}
+\end{table}
+
+\subsection*{A.2: Get Report by CID (\texttt{GET /api/v1/reports/\{cid\}})}
+
+\begin{table}[H]
+  \centering
+  \smalltable
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{5pt}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.07\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.52\textwidth}|
+                  >{\centering\arraybackslash}p{0.12\textwidth}|
+                  >{\centering\arraybackslash}p{0.13\textwidth}|}
+    \hline
+    \textbf{TC ID} & \textbf{Assertion} & \textbf{Result} & \textbf{Time (s)} \\
+    \hline\hline
+    TC-08 & Status 200; CID matches; SHA-256 is 64-char hex; filename non-empty; status is ``complete''; verificationUrl present; threatLevel valid; uploadedAt is a date; response time \textless{}30 s & \textbf{PASS} & 0.147 \\
+    \hline
+    TC-09 & Status 404; error is ``Report not found''; response time \textless{}30 s & \textbf{PASS} & 0.054 \\
+    \hline
+    TC-10 & Status 401 or 403 with no API key; response time \textless{}30 s & \textbf{PASS} & 0.048 \\
+    \hline
+    TC-11 & Status 404 for non-owned CID (tenant enumeration hidden); response is not 403; response time \textless{}30 s & \textbf{PASS} & 0.053 \\
+    \hline
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{Integration test results: Get Report by CID group (17 assertions, 0 failures, 0.307 s)}
+  \label{tab:int-report-cid}
+\end{table}
+
+\subsection*{A.3: Public Verification, Download, and Storage Status}
+
+\begin{table}[H]
+  \centering
+  \smalltable
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{5pt}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.07\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.10\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.42\textwidth}|
+                  >{\centering\arraybackslash}p{0.12\textwidth}|
+                  >{\centering\arraybackslash}p{0.10\textwidth}|}
+    \hline
+    \textbf{TC ID} & \textbf{Group} & \textbf{Key Assertions} & \textbf{Result} & \textbf{Time (s)} \\
+    \hline\hline
+    TC-12 & Verify & verified is true; CID matches; SHA-256 64-char hex; uploadedAt present; threatLevel valid & \textbf{PASS} & 0.066 \\
+    \hline
+    TC-13 & Verify & Status 200; verified is false; message present (unknown CID) & \textbf{PASS} & 0.055 \\
+    \hline
+    TC-14 & Verify & Status 200; verified is false for garbage CID; message present & \textbf{PASS} & 0.053 \\
+    \hline
+    TC-15 & Verify & Status 200 without API key (public endpoint); verified is true & \textbf{PASS} & 0.056 \\
+    \hline
+    TC-16 & Download & Status 200; Content-Disposition: attachment; Content-Type present; body non-empty & \textbf{PASS} & 5.841 \\
+    \hline
+    TC-17 & Download & Status 404; error is ``Report not found'' & \textbf{PASS} & 0.054 \\
+    \hline
+    TC-18 & Download & Status 401 or 403 when no API key & \textbf{PASS} & 0.119 \\
+    \hline
+    TC-19 & Storage & Status 200; status is ``pinned'' or ``processing''; accessible is boolean; size is a number & \textbf{PASS} & 0.061 \\
+    \hline
+    TC-20 & Storage & Status 404; error is ``Report not found'' & \textbf{PASS} & 0.053 \\
+    \hline
+    TC-21 & Storage & Status 401 or 403 when no API key & \textbf{PASS} & 0.049 \\
+    \hline
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{Integration test results: Verify, Download, and Storage Status groups (41 assertions, 0 failures)}
+  \label{tab:int-verify-download-storage}
+\end{table}
+
+\subsection*{A.4: Integration Suite Overall Summary}
+
+\begin{table}[H]
+  \centering
+  \smalltable
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{6pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.28\textwidth}|
+                  >{\centering\arraybackslash}p{0.12\textwidth}|
+                  >{\centering\arraybackslash}p{0.14\textwidth}|
+                  >{\centering\arraybackslash}p{0.08\textwidth}|
+                  >{\centering\arraybackslash}p{0.08\textwidth}|
+                  >{\centering\arraybackslash}p{0.14\textwidth}|}
+    \hline
+    \textbf{Group} & \textbf{Test cases} & \textbf{Assertions} & \textbf{Pass} & \textbf{Fail} & \textbf{Duration (s)} \\
+    \hline\hline
+    Scan Upload & 8 & 37 & 37 & 0 & 77.969 \\
+    \hline
+    Get Report by CID & 4 & 17 & 17 & 0 & 0.307 \\
+    \hline
+    Verify (Public) & 4 & 18 & 18 & 0 & 0.230 \\
+    \hline
+    Download & 3 & 12 & 12 & 0 & 6.014 \\
+    \hline
+    Storage Status & 3 & 11 & 11 & 0 & 0.163 \\
+    \hline
+    \textbf{TOTAL} & \textbf{22} & \textbf{93} & \textbf{93} & \textbf{0} & \textbf{83.728} \\
+    \hline
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{Integration test suite overall summary}
+  \label{tab:int-overall}
+\end{table}
+
+% ============================================================
+\clearpage
+\section{APPENDIX B: FUNCTIONAL TEST SUITE RESULTS}
+\label{appendix:functional-tests}
+% ============================================================
+
+The following tables present the complete results from the VERACISM Functional
+Test Suite executed on 31 March 2026.  The suite combines 15 automated API
+test cases (executed via Newman with Bearer-token authentication), 11
+code review verifications, and 4 observational checks.  All 89 automated
+assertions passed with zero failures.
+
+\subsection*{B.1: Role-Based Functional Test Results}
+
+The 30 functional test cases are presented below in six separate tables,
+one per actor role, to improve readability.
+
+%: B.1a System Administrator ---
+\begin{table}[H]
+  \centering
+  \smalltable
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{4pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.11\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.30\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.15\textwidth}|
+                  >{\centering\arraybackslash}p{0.10\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.22\textwidth}|}
+    \hline
+    \textbf{TC ID} & \textbf{Test Case} & \textbf{Method} & \textbf{Result} & \textbf{Key Evidence} \\
+    \hline\hline
+    TC-ADM-001 & Approve integration request & Code Review & \textbf{PASSED} & Admin tenant management pages; \texttt{TenantsController} CRUD; \texttt{is\_active} flag \\
+    \hline
+    TC-ADM-002 & Manage users and roles & Code Review & \textbf{PASSED} & \texttt{/admin/users} UI; \texttt{UsersController}; Auth0 role sync via \texttt{ValidateUserExistsFilter} \\
+    \hline
+    TC-ADM-003 & Update keys and critical config & Code Review & \textbf{PASSED} & API Keys settings page; \texttt{ApiClient} table; ClamAV/YARA config via \texttt{appsettings.json} \\
+    \hline
+    TC-ADM-004 & View audit logs and export & Code Review & \textbf{PASSED} & \texttt{GET /audit/export/csv} and \texttt{/pdf}; actor, action, and tenantId filtering; 10,000-record export cap \\
+    \hline
+    TC-ADM-005 & View health and alerts & Code Review & \textbf{PASSED} & Admin dashboard health widgets; ClamAV/Lighthouse/DB status indicators \\
+    \hline
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{Functional tests: System Administrator (TC-ADM), 5 test cases}
+  \label{tab:func-adm}
+\end{table}
+
+%: B.1b IT Office Staff ---
+\begin{table}[H]
+  \centering
+  \smalltable
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{4pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.11\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.30\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.15\textwidth}|
+                  >{\centering\arraybackslash}p{0.10\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.22\textwidth}|}
+    \hline
+    \textbf{TC ID} & \textbf{Test Case} & \textbf{Method} & \textbf{Result} & \textbf{Key Evidence} \\
+    \hline\hline
+    TC-ITO-001 & API upload integration & Automated API & \textbf{PASSED} & \texttt{POST /api/v1/scan-upload} returns requestId, sha256, reportId, cid; all 7 assertions pass \\
+    \hline
+    TC-ITO-002 & Unauthorized upload rejection & Automated API & \textbf{PASSED} & Invalid key $\rightarrow$ 401/403; missing header $\rightarrow$ 401/403; no file stored \\
+    \hline
+    TC-ITO-003 & Metadata consistency & Automated API & \textbf{PASSED} & \texttt{GET /api/v1/reports/\{cid\}} CID, SHA-256, filename, uploadedAt, status all consistent \\
+    \hline
+    TC-ITO-004 & Lighthouse anchoring & Automated API & \textbf{PASSED} & CID non-empty; status is ``pinned'' or ``processing''; accessible: true; file size positive \\
+    \hline
+    TC-ITO-005 & Temporary Lighthouse outage retry & Code Review & \textbf{FAILED} & No Polly retry policy; single HTTP POST with no retry/circuit breaker; future enhancement \\
+    \hline
+    TC-ITO-006 & Scoped audit access & Code Review & \textbf{PARTIAL} & RBAC enforced; tenant isolation on Report queries; dedicated audit log UI not yet built \\
+    \hline
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{Functional tests: IT Office Staff (TC-ITO), 6 test cases}
+  \label{tab:func-ito}
+\end{table}
+
+%: B.1c Administration Office / Registrar ---
+\begin{table}[H]
+  \centering
+  \smalltable
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{4pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.11\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.30\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.15\textwidth}|
+                  >{\centering\arraybackslash}p{0.10\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.22\textwidth}|}
+    \hline
+    \textbf{TC ID} & \textbf{Test Case} & \textbf{Method} & \textbf{Result} & \textbf{Key Evidence} \\
+    \hline\hline
+    TC-REG-001 & Upload finalized report & Automated API & \textbf{PASSED} & PDF with studentNumber, documentLabel, sourceSystem $\rightarrow$ 200; requestId, reportId, cid returned \\
+    \hline
+    TC-REG-002 & Reject unsupported file type & Automated API & \textbf{PASSED} & Empty body $\rightarrow$ 400; error: ``no files''; no results array \\
+    \hline
+    TC-REG-003 & Associate report to correct student & Automated API & \textbf{PASSED} & studentNumber=999999 $\rightarrow$ studentId non-null positive integer; \texttt{Student} table ext\_ref lookup \\
+    \hline
+    TC-REG-004 & Receive CID and QR code & Code Review & \textbf{PASSED} & \texttt{FileViewerModal} generates QR via \texttt{qrcode} library; CID embedded in verification URL \\
+    \hline
+    TC-REG-005 & View upload and anchoring status & Code Review & \textbf{PASSED} & Tenant files page shows report list with status labels (1=Processing, 2=Complete) \\
+    \hline
+    TC-REG-006 & Attempt modify/delete uploaded report & Code Review & \textbf{PASSED} & No PUT/DELETE on reports; API is append only; UI does not render edit/delete actions \\
+    \hline
+    TC-REG-007 & Controlled download & Automated API & \textbf{PASSED} & Content-Disposition: attachment; no Lighthouse URL in headers; body non-empty \\
+    \hline
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{Functional tests: Administration Office / Registrar (TC-REG), 7 test cases}
+  \label{tab:func-reg}
+\end{table}
+
+%: B.1d Student ---
+\begin{table}[H]
+  \centering
+  \smalltable
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{4pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.11\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.30\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.15\textwidth}|
+                  >{\centering\arraybackslash}p{0.10\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.22\textwidth}|}
+    \hline
+    \textbf{TC ID} & \textbf{Test Case} & \textbf{Method} & \textbf{Result} & \textbf{Key Evidence} \\
+    \hline\hline
+    TC-STU-001 & Verify by QR code & Code Review & \textbf{PASSED} & QR encodes \texttt{/verify/\{cid\}}; public verify route is unauthenticated \\
+    \hline
+    TC-STU-002 & Verify by CID entry & Automated API & \textbf{PASSED} & \texttt{GET /api/v1/verify?cid=\{cid\}} $\rightarrow$ verified: true; sha256Match: true; inLighthouse: true \\
+    \hline
+    TC-STU-003 & Invalid CID handling & Automated API & \textbf{PASSED} & Invalid CID $\rightarrow$ 404; descriptive message; no stack trace or internal details \\
+    \hline
+    TC-STU-004 & Result screen comprehension & Code Review & \textbf{PASSED} & Color-coded badges; plain-language labels; CID labeled as ``Document Identifier'' \\
+    \hline
+    TC-STU-005 & Access boundary check & Code Review & \textbf{PASSED} & \texttt{auth0Guard} protects \texttt{/admin/*} and \texttt{/tenant/*}; unauthenticated users redirected \\
+    \hline
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{Functional tests: Student (TC-STU), 5 test cases}
+  \label{tab:func-stu}
+\end{table}
+
+%: B.1e External Auditor / Educator ---
+\begin{table}[H]
+  \centering
+  \smalltable
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{4pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.11\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.30\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.15\textwidth}|
+                  >{\centering\arraybackslash}p{0.10\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.22\textwidth}|}
+    \hline
+    \textbf{TC ID} & \textbf{Test Case} & \textbf{Method} & \textbf{Result} & \textbf{Key Evidence} \\
+    \hline\hline
+    TC-EXT-001 & Verify by QR (no login) & Automated API & \textbf{PASSED} & Public endpoint (\texttt{[AllowAnonymous]}); verified: true without any auth headers \\
+    \hline
+    TC-EXT-002 & Verify by CID (valid/altered/unavailable) & Automated API & \textbf{PASSED} & Valid $\rightarrow$ verified: true; unavailable $\rightarrow$ verified: false with descriptive message \\
+    \hline
+    TC-EXT-003 & Repeat check from different networks & Code Review & \textbf{PASSED} & Deterministic DB lookup; no session state; no IP-based filtering \\
+    \hline
+    TC-EXT-004 & Restricted internal access & Automated API & \textbf{PASSED} & Download and report endpoints return 401/403 without credentials \\
+    \hline
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{Functional tests: External Auditor / Educator (TC-EXT), 4 test cases}
+  \label{tab:func-ext}
+\end{table}
+
+%: B.1f Cross-Role End-to-End ---
+\begin{table}[H]
+  \centering
+  \smalltable
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{4pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.11\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.30\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.15\textwidth}|
+                  >{\centering\arraybackslash}p{0.10\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.22\textwidth}|}
+    \hline
+    \textbf{TC ID} & \textbf{Test Case} & \textbf{Method} & \textbf{Result} & \textbf{Key Evidence} \\
+    \hline\hline
+    TC-E2E-001 & Upload-to-verify journey & Automated API & \textbf{PASSED} & Upload $\rightarrow$ CID $\rightarrow$ public verify $\rightarrow$ sha256Match: true; full journey in single automated run \\
+    \hline
+    TC-E2E-002 & Tampered file negative case & Automated API & \textbf{PASSED} & Fabricated CID $\rightarrow$ 404; integrity warning message; no false positive verification \\
+    \hline
+    TC-E2E-003 & Unavailable deal negative case & Code Review & \textbf{PARTIAL} & \texttt{/verify} returns verified: false for missing CID; health alerting not implemented \\
+    \hline
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{Functional tests: Cross-Role End-to-End (TC-E2E), 3 test cases}
+  \label{tab:func-e2e}
+\end{table}
+
+\subsection*{B.2: Functional Suite Overall Summary}
+
+\begin{table}[H]
+  \centering
+  \smalltable
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{6pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.30\textwidth}|
+                  >{\centering\arraybackslash}p{0.13\textwidth}|
+                  >{\centering\arraybackslash}p{0.13\textwidth}|
+                  >{\centering\arraybackslash}p{0.08\textwidth}|
+                  >{\centering\arraybackslash}p{0.08\textwidth}|
+                  >{\centering\arraybackslash}p{0.14\textwidth}|}
+    \hline
+    \textbf{Feature Group} & \textbf{Suites} & \textbf{Assertions} & \textbf{Pass} & \textbf{Fail} & \textbf{Duration (s)} \\
+    \hline\hline
+    F1: IT Office API Tests & 5 & 27 & 27 & 0 & 54.231 \\
+    \hline
+    F2: Registrar Upload Tests & 4 & 20 & 20 & 0 & 39.508 \\
+    \hline
+    F3: Public Verification Tests & 7 & 28 & 28 & 0 & 21.047 \\
+    \hline
+    F4: End-to-End Journey & 3 & 14 & 14 & 0 & 24.533 \\
+    \hline
+    \textbf{TOTAL} & \textbf{19} & \textbf{89} & \textbf{89} & \textbf{0} & \textbf{116.641} \\
+    \hline
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{Functional test suite automated results summary (89 assertions, 100\% pass rate)}
+  \label{tab:func-overall}
+\end{table}
+
+\subsection*{B.3: Functional Requirement Coverage Matrix}
+
+\begin{table}[H]
+  \centering
+  \smalltable
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{5pt}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{|>{\centering\arraybackslash}p{0.07\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.26\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.34\textwidth}|
+                  >{\centering\arraybackslash}p{0.16\textwidth}|}
+    \hline
+    \textbf{FR} & \textbf{Description} & \textbf{Test Cases} & \textbf{Coverage} \\
+    \hline\hline
+    FR01 & Document upload and scan & TC-ITO-001, TC-REG-001, TC-REG-002, TC-REG-003, TC-E2E-001 & Full \\
+    \hline
+    FR02 & Threat detection (ClamAV, YARA, PDF phishing) & TC-ITO-001 (threatLevel assertion), TC-07A & Partial \\
+    \hline
+    FR03 & SHA-256 hashing for integrity & TC-ITO-001, TC-ITO-003, TC-STU-002, TC-E2E-001, TC-E2E-002 & Full \\
+    \hline
+    FR04 & Lighthouse/IPFS storage and anchoring & TC-ITO-004, TC-REG-004, TC-E2E-001 & Full \\
+    \hline
+    FR05 & CID generation and QR code & TC-ITO-001, TC-REG-004, TC-STU-001, TC-EXT-001 & Full \\
+    \hline
+    FR06 & Authentication and authorization & TC-ITO-002, TC-ADM-001, TC-ADM-002, TC-STU-005, TC-EXT-004 & Full \\
+    \hline
+    FR07 & Public verification (no auth) & TC-STU-002, TC-STU-003, TC-EXT-001, TC-EXT-002, TC-E2E-001, TC-E2E-002 & Full \\
+    \hline
+    FR08 & Multi-tenant data isolation & TC-ITO-003, TC-ITO-006, TC-REG-003, TC-11 & Partial \\
+    \hline
+    FR09 & Audit logging & TC-ADM-004, TC-ITO-006, TC-E2E-003 & Partial \\
+    \hline
+    FR10 & Controlled download (no direct URL exposure) & TC-REG-007, TC-EXT-004 & Full \\
+    \hline
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{Functional requirement to test case traceability matrix}
+  \label{tab:func-coverage}
+\end{table}
+
+% ============================================================
+\clearpage
+\section{APPENDIX C: SECURITY ASSESSMENT FINDINGS AND REMEDIATION}
+\label{appendix:security}
+% ============================================================
+
+Security evaluation of VERACISM was conducted in two phases: an initial
+dynamic application scan (DAST) using Burp Suite, followed by manual
+verification of findings and targeted penetration testing.  Five confirmed
+vulnerabilities were identified and subsequently remediated before the initial
+controlled deployment.  The tables below summarise the findings, affected
+endpoints, and remediation status.
+
+\subsection*{C.1: Initial DAST Scan Summary}
+
+\begin{table}[H]
+  \centering
+  \smalltable
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{6pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.28\textwidth}|
+                  >{\centering\arraybackslash}p{0.12\textwidth}|
+                  >{\centering\arraybackslash}p{0.14\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.30\textwidth}|}
+    \hline
+    \textbf{Finding type} & \textbf{Severity} & \textbf{Confidence} & \textbf{Note} \\
+    \hline\hline
+    SQL Injection (4 instances) & High & Tentative & Responses consistent with path-based 403 from IIS; ORM/parameterized queries confirmed by code review: false positive \\
+    \hline
+    Cross-Site Scripting (reflected) & Medium & Tentative & Injected payloads absorbed by Angular's built-in output encoding; not exploitable in practice \\
+    \hline
+    Missing security headers & Low & Certain & \texttt{X-Frame-Options}, \texttt{X-Content-Type-Options}, and \texttt{Strict-Transport-Security} present; some cache-control headers absent on API responses \\
+    \hline
+    Backup / test file disclosure & Informational & Certain & Backup URL patterns flagged; all 403-gated by IIS; no actual backup files accessible \\
+    \hline
+    Email address disclosure & Informational & Certain & User email fields present in authenticated API responses; by design for admin role \\
+    \hline
+    Cacheable HTTPS response & Informational & Certain & Cache-control headers absent on a small number of read-only public endpoints \\
+    \hline
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{Initial Burp Suite DAST scan summary (staging environment, 21 March 2026)}
+  \label{tab:dast-summary}
+\end{table}
+
+\subsection*{C.2: Confirmed Vulnerabilities and Remediation Status}
+
+\begin{table}[H]
+  \centering
+  \smalltable
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{5pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\centering\arraybackslash}p{0.07\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.26\textwidth}|
+                  >{\centering\arraybackslash}p{0.12\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.34\textwidth}|
+                  >{\centering\arraybackslash}p{0.10\textwidth}|}
+    \hline
+    \textbf{ID} & \textbf{Title} & \textbf{Severity} & \textbf{Remediation Applied} & \textbf{Status} \\
+    \hline\hline
+    VUL-01 & Unbounded API Client Data Response & Low & Server-side pagination (\texttt{OFFSET/FETCH}); configurable page/pageSize; max cap of 100 per page & Remediated \\
+    \hline
+    VUL-02 & BOLA on API Client Records & Medium--High & Explicit tenant ownership check on GET, PUT, PATCH, DELETE; HTTP 403 for cross tenant reads & Remediated \\
+    \hline
+    VUL-03 & Insufficient File Type Validation & Low--Medium & Allowlist of 18 permitted extensions via \texttt{FileValidationHelper}; applied before scanning pipeline; frontend \texttt{accept} attribute updated & Remediated \\
+    \hline
+    VUL-04 & BOLA on Report Records & Medium--High & Tenant ownership check on \texttt{GET /reports/\{id\}}, \texttt{GET /reports/\{id\}/latest}, and \texttt{GET /reports/user/\{userId\}}; HTTP 403 for cross tenant access & Remediated \\
+    \hline
+    VUL-05 & Missing Tenant Isolation on File View/Download & Medium--High & \texttt{EnforceTenantOwnershipAsync(cid)} helper in VerifyController; admin pass-through retained; HTTP 403 for non-owner callers on view and download & Remediated \\
+    \hline
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{Confirmed vulnerabilities and remediation status (Security Remediation Report, 27 March 2026)}
+  \label{tab:security-vulns}
+\end{table}
+
+\subsection*{C.3: Deferred Findings}
+
+\begin{table}[H]
+  \centering
+  \smalltable
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{6pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\centering\arraybackslash}p{0.07\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.40\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.40\textwidth}|}
+    \hline
+    \textbf{ID} & \textbf{Description} & \textbf{Rationale for Deferral} \\
+    \hline\hline
+    DEF-01 & BOLA on \texttt{GET /api/reports/user/\{userId\}}: partial tenant check & Addressed in VUL-04; cross-user enumeration within a tenant requires additional UX review \\
+    \hline
+    DEF-02 & Nullable reference warnings in \texttt{TenantRepository.cs} and \texttt{UsersController.cs} & Pre-existing warnings; no runtime impact confirmed; scheduled for nullable annotation cleanup \\
+    \hline
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{Deferred security findings tracked for next development sprint}
+  \label{tab:security-deferred}
+\end{table}
+
+% ============================================================
+\clearpage
+\section{APPENDIX D: PERFORMANCE TEST RESULTS}
+\label{appendix:performance}
+% ============================================================
+
+Two rounds of performance testing were conducted against the VERACISM staging
+environment using Postman's built-in Performance Testing feature.  The tests
+targeted the public CID verification endpoint
+(\texttt{GET /api/v1/verify?cid=\{cid\}}), which is the highest-traffic
+endpoint in the expected production workload.
+
+\subsection*{D.1: Test Configuration}
+
+\begin{table}[H]
+  \centering
+  \smalltable
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{6pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.32\textwidth}|
+                  >{\centering\arraybackslash}p{0.27\textwidth}|
+                  >{\centering\arraybackslash}p{0.27\textwidth}|}
+    \hline
+    \textbf{Parameter} & \textbf{Version 1.0} & \textbf{Version 1.1} \\
+    \hline\hline
+    Test date & 2026-03-28 & 2026-03-30 \\
+    \hline
+    Target endpoint & \multicolumn{2}{c|}{\texttt{GET /api/v1/verify?cid=\{cid\}}} \\
+    \hline
+    Virtual users (VU) & 100 & 100 \\
+    \hline
+    Test duration & 5 minutes & 5 minutes \\
+    \hline
+    Infrastructure rate limiting & Enabled (default) & Disabled \\
+    \hline
+    Rationale for v1.1 &: & Rate-limiting was identified as the root cause of elevated error rates in v1.0; disabled for v1.1 to establish baseline throughput \\
+    \hline
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{Performance test configuration: Version 1.0 vs.\ Version 1.1}
+  \label{tab:perf-config}
+\end{table}
+
+\subsection*{D.2: Key Observations}
+
+\begin{table}[H]
+  \centering
+  \smalltable
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{6pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.32\textwidth}|
+                  >{\centering\arraybackslash}p{0.27\textwidth}|
+                  >{\centering\arraybackslash}p{0.27\textwidth}|}
+    \hline
+    \textbf{Metric} & \textbf{Version 1.0} & \textbf{Version 1.1} \\
+    \hline\hline
+    Error rate & Elevated (infrastructure rate limiting triggered) & Significantly reduced (rate limiting off) \\
+    \hline
+    Average response time & Higher (queuing due to throttling) & Lower (direct path to backend) \\
+    \hline
+    Throughput & Limited by rate limiting rules & Near-maximum for staging hardware \\
+    \hline
+    Root cause identified & Rate-limiting rules on the Nginx reverse proxy were set at levels below the 100-VU load & Confirmed: disabling rate limiting reduced errors; rate limits should be tuned for production load \\
+    \hline
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{Performance test observations summary (for full numeric data, see VERACISM-Performance-Testing-1.0.pdf and VERACISM-Performance-Testing-1.1.pdf)}
+  \label{tab:perf-observations}
+\end{table}
+
+\noindent The performance testing exercise revealed that the system infrastructure
+had a rate limiting policy configured at the Nginx reverse proxy layer that
+was set below the threshold required for the anticipated 100-concurrent-user
+load.  Version~1.0 results showed a notable proportion of failed requests
+attributed to HTTP~429 (Too Many Requests) responses returned by the proxy
+before requests reached the application layer.  Version~1.1 results, obtained
+after disabling the rate limiting rules for the test, demonstrated that the
+application itself handled the concurrent load with substantially lower error
+rates, confirming that the underlying .NET~8 application server and the
+SQL~Server database can sustain the tested load.  The rate limiting
+configuration requires re-tuning before production release to balance
+protection against abuse with legitimate concurrent usage.
+
+% ============================================================
+\clearpage
+\section{APPENDIX E: FUNCTIONAL \& INTEGRATION TEST RESULTS REPORT (FULL PDF)}
+\label{appendix:pdf-functional}
+% ============================================================
+
+The following pages reproduce the full automated test execution report
+(\textit{FUNCTIONAL\_INTEGRATION\_TEST\_RESULTS.pdf}) generated by the Newman
+CLI runner on 30--31 March 2026.  The report covers both the Integration Test
+Suite (22 test cases, 93 assertions) and the Functional Test Suite (19 test
+cases, 89 assertions).  All 182 assertions passed with zero failures and zero
+errors.
+
+% \includepdf[pages=-,pagecommand={\thispagestyle{empty}},fitpaper=true]%
+%   {Texfiles/reports/FUNCTIONAL_INTEGRATION_TEST_RESULTS.pdf}
+\noindent\textit{[Full report PDF submitted as a separate attachment.  Results are summarised in Appendices~A and~B above.]}
+
+% ============================================================
+\clearpage
+\section{APPENDIX F: PERFORMANCE TEST REPORT: VERSION 1.0 (FULL PDF)}
+\label{appendix:pdf-perf-v10}
+% ============================================================
+
+The following pages reproduce the full performance test report
+(\textit{VERACISM-Performance-Testing-1.0.pdf}) from the first load test run
+on 28 March 2026.  This run used 100 virtual users over a 5-minute duration
+against the public CID verification endpoint with the Nginx rate limiting
+policy \textbf{enabled}.  The elevated error rate visible in this report was
+subsequently diagnosed as HTTP~429 responses from the reverse proxy.
+
+\includepdf[pages=-,pagecommand={\thispagestyle{empty}},fitpaper=true]
+   {Texfiles/reports/VERACISM-Performance-Testing-1.0.pdf}
+\noindent\textit{[Full report PDF submitted as a separate attachment.  Results are summarised in Appendix~D above.]}
+
+% ============================================================
+\clearpage
+\section{APPENDIX G: PERFORMANCE TEST REPORT: VERSION 1.1 (FULL PDF)}
+\label{appendix:pdf-perf-v11}
+% ============================================================
+
+The following pages reproduce the full performance test report
+(\textit{VERACISM-Performance-Testing-1.1.pdf}) from the second load test run
+on 30 March 2026.  This run used the same configuration (100 virtual users,
+5 minutes) but with the Nginx rate limiting policy \textbf{disabled}.  The
+error rate is significantly lower than Version~1.0, confirming that the
+application layer itself is not the source of failures.
+
+ \includepdf[pages=-,pagecommand={\thispagestyle{empty}},fitpaper=true]
+   {Texfiles/reports/VERACISM-Performance-Testing-1.1.pdf}
+\noindent\textit{[Full report PDF submitted as a separate attachment.  Results are summarised in Appendix~D above.]}
+
+% ============================================================
+\clearpage
+\section{APPENDIX H: SECURITY INITIAL ASSESSMENT REPORT (FULL PDF)}
+\label{appendix:pdf-security-initial}
+% ============================================================
+
+The following pages reproduce the full Burp Suite DAST scan report
+(\textit{Veracism-Security-Initial-Report.pdf}) produced on 21 March 2026.
+This report covers the dynamic security scan of the VERACISM staging
+environment, including all tentative findings (SQL injection, XSS, header
+issues, informational disclosures).  Manual code review subsequently confirmed
+that the SQL injection findings were false positives due to Entity Framework
+Core ORM usage throughout the data access layer.
+
+ \includepdf[pages=-,pagecommand={\thispagestyle{empty}},fitpaper=true]
+   {Texfiles/reports/Veracism-Security-Initial-Report.pdf}
+\noindent\textit{[Full report PDF submitted as a separate attachment.  Findings are summarised in Appendix~C above.]}
+
+% ============================================================
+\clearpage
+\section{APPENDIX J: USER ACCEPTANCE TEST (UAT) RESULTS}
+\label{appendix:uat-results}
+% ============================================================
+
+The following appendix records the completed User Acceptance Testing (UAT)
+outcomes for VERACISM. UAT execution followed the role based task scripts used
+for administrator, tenant office, registrar, student, external verifier, and
+cross role journey validation. UAT entries were role scoped, so blank cells in
+non assigned UAT columns are expected and were excluded from scoring.
+
+\begin{table}[H]
+  \centering
+  \smalltable
+  \footnotesize
+  {%
+  \setlength{\tabcolsep}{8pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.45\textwidth}|
+                  >{\centering\arraybackslash}p{0.25\textwidth}|}
+    \hline
+    \textbf{UAT Metric} & \textbf{Result} \\
+    \hline\hline
+    UAT participants (responses) & 10 \\
+    \hline
+    Role scoped UAT evaluations recorded & 16 \\
+    \hline
+    Passed evaluations & 15 (93.8\%) \\
+    \hline
+    Partially completed evaluations & 1 (6.2\%) \\
+    \hline
+    Failed evaluations & 0 (0.0\%) \\
+    \hline
+    Unique UAT IDs with responses & 8 / 8 \\
+    \hline
+    Unique case outcomes & 7 Passed, 1 Partial, 0 Failed \\
+    \hline
+  \end{tabular}
+  }%
+  \captionsetup{type=table}
+  \caption{User Acceptance Test (UAT) execution summary}
+  \label{tab:uat-summary}
+\end{table}
+
+The following pages reproduce the full UAT response form
+(\textit{Veracism UAT Form.pdf}) collected on 23--27 April 2026.
+The form captures role-scoped task results from 10 participants across
+four roles: System Administrator, Tenant Administrator, IT Integrator /
+Developer, and External Verifier.  UAT outcomes are summarised in the
+Results and Discussion chapter and in Table~\ref{tab:uat-summary} above.
+
+\includepdf[pages=-,pagecommand={\thispagestyle{empty}},fitpaper=true]
+  {Texfiles/reports/Veracism UAT Form.pdf}
+
+% ============================================================
+\clearpage
+\section{APPENDIX I: SECURITY REMEDIATION REPORT (FULL PDF)}
+\label{appendix:pdf-security-remediation}
+% ============================================================
+
+The following pages reproduce the full Security Remediation Report
+(\textit{SECURITY\_REMEDIATION\_REPORT.pdf}) prepared on 27 March 2026.
+This report documents the five confirmed vulnerabilities (VUL-01 through
+VUL-05), their root-cause analysis, the specific source code changes applied
+for each remediation, and the post-fix verification performed.
+
+ \includepdf[pages=-,pagecommand={\thispagestyle{empty}},fitpaper=true]
+  {Texfiles/reports/SECURITY_REMEDIATION_REPORT.pdf}
+\noindent\textit{[Full report PDF submitted as a separate attachment.  Findings are summarised in Appendix~C above.]}
+
+
+
