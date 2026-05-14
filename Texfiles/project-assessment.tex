@@ -1,46 +1,19 @@
 % Put the project assessment here
 \section{Project Assessment}
 
-This chapter describes how VERACISM will be evaluated once development is
-complete. The goal of the assessment process is to confirm that the system is
-functional, secure, usable, and ready for deployment within the International
-School Manila (ISM) environment. For the proposal stage, the focus is on the
-planned testing approach: the types of tests to be performed, the tools to be
-used, and the metrics that will be collected. Actual test results will be
-produced only after implementation.
+This chapter outlines the evaluation of the VERACISM once it will be developed. The aim of the evaluation process is to assure that the system is operational, secure, usable, and deployable in the International School Manila (ISM) environment. In the proposal phase the emphasis is on the proposed approach to testing; the tests to be used; and the metrics to be gathered. These actual tests will produce test results only after implementation.
 
 \subsection{Functional Testing}
 
-Functional testing focused on verifying that the implemented features of
-VERACISM behaved according to the intended system requirements. The testing
-scope covered the main document-processing functions of the platform,
-including file upload, validation, malware scanning, hashing, CID generation,
-metadata retrieval, controlled download, dashboard and audit visibility,
-tenant-scoped access, and public verification.
+The purpose of this testing was to ensure that the features that were implemented under VERACISM were functioning as they were designed to do so based on the system requirements. These testing procedures included validating uploaded files, checking for malware, hashing uploaded content, generating CIDs, downloading content with control, auditing and dashboard views, tenant-scoped access and public verification.
 
-The functional assessment used a \textbf{hybrid approach} composed of
+A \textbf{hybrid approach} of
 \textbf{automated black-box API testing} and \textbf{manual role-based
-functional testing}. Automated execution was carried out through Postman
-collections run using Newman in the staging environment. These automated
-tests covered the public API v1 workflow and selected end-to-end user
-journeys, including IT Office upload, Registrar upload, student and external
-verification, protected download behaviour, and cross-role upload-to-verify
-flows.
+functional testing}. Automated execution: Automated using Newman in Postman collections with the staging environment. These automated tests: tested the v1 public API workflow, some end-to-end user journeys, including IT Office upload, Registrar upload, student and external verification, protected download behaviour; and Cross-role upload to verify flow.
 
-Because the current Newman suite primarily exercises the public API v1
-surface, manual functional testing was also included for modules and flows
-that require user interface interaction, Bearer JWT protected internal
-endpoints, QR-based testing with a mobile device, dashboard inspection,
-tenant-scoped access checks, and role-based administration tasks.
+For the sake of manual functional testing, a few modules and flows that are exposed on the user interface needed manual testing, some Bearer JWT protected internal endpoints are involved, a few tests using QR code with a mobile device, a few reports on the dashboard, a couple of access checks followed by tenant scope and some gates managed by the administration program that needs role interaction.
 
-Manual functional procedures were prepared and executed for the System
-Administrator, IT Office / tenant user, Administration Office / Registrar,
-Student, External Auditor / Educator, and cross-role end-to-end scenarios.
-These procedures covered tenant approval, user and role management, API key
-and configuration changes, audit log review and export, health monitoring,
-QR display and scan validation, dashboard status review, report deletion or
-immutability checks, comprehension checks, cross-tenant access boundary
-tests, and multi-network verification checks.
+Manual functional procedures were developed and followed for the System Administrator, IT Office / tenant user, Administration Office / Registrar, Student, External Auditor / Educator and for the end-to-end scenarios. These procedures included tenant approval, user management, API key updates, configuration changes, audit log review/export, health monitoring, QR display and scan verification, dashboard status checking, report deletion or immutability checks, comprehension checks, access boundary checks across tenants, and multi-network verification checks.
 
 The primary criteria used in functional testing included correct HTTP status
 codes, correct response structures, presence and format of expected fields,
@@ -314,12 +287,7 @@ public verification, controlled file download, and storage-status checking.
 Both valid and invalid cases were included to assess API contract behaviour,
 error handling, response consistency, and subsystem coordination.
 
-The integration design also checked whether accepted uploads moved correctly
-through the scanning, hashing, metadata, and storage stages, and whether
-invalid or unauthorized requests were blocked without creating unintended
-records. Additional attention was given to tenant isolation,
-public-versus-protected endpoint behaviour, and consistency between uploaded
-metadata and retrieved metadata.
+The integration design also included a test for valid uploads to go to the scan, hash, metadata and storage points and invalid or unauthorized requests being blocked and not creating unnecessary records. More focus was put on tenant isolation, consistency of uploaded metadata retrieved metadata, and public versus protected endpoint behaviour.
 
 The primary criteria used in integration testing included end-to-end request
 completion, correctness of inter-service outputs, validation of report and CID
@@ -328,43 +296,17 @@ system boundaries across tenants and access levels.
 
 \subsection{Performance Testing}
 
-Performance testing focused on the responsiveness and stability of VERACISM
-under expected verification traffic in the staging environment. The
-performance assessment concentrated on the public CID verification endpoint
-because this function is central to the use of the platform by students,
-external verifiers, and partner institutions that require prompt integrity
-checks.
+The customer was interested in testing of the VERACISM responsiveness and stability against the expected verification traffic in the Staging environment. The public CID verification endpoint was focused for this as this is a key aspect of how the platform is used by students, external verifiers and partner institutions needing to make a rapid integrity check.
 
-The performance run was carried out using Postman Performance Testing against
-the VERACISM API staging environment. The test profile used a fixed load with
-100 virtual users over a duration of five minutes. The test scenario targeted
-the valid public verification request and captured request volume,
-throughput, response time, percentile response times, and observed
-transport-level errors during the run.
+The performance run was performed on Postman Performance Testing and connected to Postman API staging environment, which is the VERACISM API. A total of 100 virtual users were used for 5 minutes in the test profile. The test scenario was aimed at the genuine public verification request with the capture of the request volume, throughput, response time, percentile response times and captured transport level errors during the run.
 
-The performance criteria for this assessment included sustained endpoint
-availability during the test window, acceptable average and percentile
-response times, stable throughput under concurrent traffic, and a minimal
-error rate. The captured metrics will be retained as performance evidence for
-later comparison and discussion in the results chapter.
-
+This assessment criteria covered the following: (1) Minimum error rate, (2) Stable throughput under concurrent traffic, (3) Average response time (within acceptable limits), and (4) Endpoint availability (sustained throughout the test window) during the test session. The metrics captured are stored as performance evidence and will be compared to and discussed with in relation to other captured metrics in the results chapter.
 
 \subsection{User Acceptance Testing}
 
-User acceptance testing will concentrate on the main actors of VERACISM:
-system administrators, tenant administrators, IT integrators, and external
-verifiers using the public portal. Test scenarios will be derived from the
-core functional flows and role-based capabilities of the system, including
-dashboard review, report and file management, tenant administration, security
-configuration, audit-log review, student and integrator management, public
-verification, and API-based integration workflows.
+User acceptance testing will focus on the primary users of VERACISM: tenant administrators, system administrators, IT integrators and external verifiers through the public portal. The test scenarios will come from the essential functional flows and capabilities of the system, such as dashboard review, report and file management, tenant administration, setting the security configuration, reviewing the audit-log, student and integrator administration, public verification, and API-based integration workflows.
 
-The user acceptance assessment will use task-based scripts aligned with the
-system acceptance criteria. Each UAT case will specify the participant role,
-linked planned test case identifiers, the assigned task, the expected result,
-and the final recorded outcome. Participants will perform the assigned tasks,
-while observers will record task completion, time taken, defects
-encountered, and any task blockers observed during execution. Results will be
+User Acceptance Assessment will be conducted with task-based scripts based on system Acceptance criterion. Each UAT case will outline the role of the participant, any related planned test case(s), the task the participant was required to perform, and the outcome and expected result relevant to that task. The participants will carry out the tasks set, and observers will document whether or not the tasks were completed, how long they took, any defects found and the task blocker observed during the carrying out of the tasks. Results will be
 recorded using objective completion outcomes such as \textit{Passed},
 \textit{Partially Completed}, or \textit{Failed}, supported by notes and
 evidence captured during the session.
@@ -848,60 +790,40 @@ explicitly included in the scope will remain out of scope.
 The overall VAPT procedure for VERACISM will follow these steps:
 
 \begin{enumerate}
-  \item \textbf{Information gathering}  
-        Collect details about infrastructure, technology stack, exposed
-        services, and endpoints; define the attack surface for the web
-        application and APIs.
+  \item \textbf{Information gathering:}  
+        Gather information on infrastructure, technology stack, exposed services, and endpoints; Establish an attack surface for web application and APIs.
 
-  \item \textbf{Automated vulnerability scanning}  
-        Run network and application scans using the tools in
-        Table~\ref{table:security-testing-plan}. The objective is to identify:
+  \item \textbf{Automated vulnerability scanning:}  
+           Perform network and application scans by using the tools in
+        Table~\ref{table:security-testing-plan}. The aim is to recognize:
         \begin{itemize}
-          \item known CVEs in platforms and libraries;
+          \item known systems and libraries with recent CVEs;
           \item open ports and exposed services;
           \item misconfigurations and weak defaults;
           \item outdated software components;
-          \item web vulnerabilities such as XSS, SQL injection, CSRF, and missing or
-                insecure HTTP headers.
+          \item exposure in the web due to XSS, SQL injection, CSRF, missing or insecure HTTP headers.
         \end{itemize}
 
-  \item \textbf{Manual verification of findings}  
-        Manually review automated results to eliminate false positives and to
-        understand how each issue behaves on a running VERACISM instance.
+  \item \textbf{Manual verification of findings:}  
+        Check the results of the automation process manually, in order to eliminate false positives and to gain insight into the functionality of each error in a running VERACISM instance.
 
-  \item \textbf{Manual security testing}  
-        Perform targeted tests on the affected flows and endpoints using safe,
-        non-destructive payloads. For each confirmed finding, record severity,
-        reproduction steps, payloads, and technical evidence (e.g., screenshots
-        and logs).
+  \item \textbf{Manual security testing:}  
+        Conduct regionally specific testing of affected flows and endpoints with safe, non-destructive payloads. Take screenshots and logs of any evidence for each confirmed find, record severity, and note reproduction steps, and identify payloads.
 
-  \item \textbf{Penetration testing focus areas}  
-        Apply the OWASP Top 10 focus areas summarized in
-        Table~\ref{table:owasp-focus} to ensure that access control, crypto,
-        input handling, configuration, components, logging, and outbound calls
-        are all tested in depth.
+  \item \textbf{Penetration testing focus areas:}  
+        A Use the OWASP Top 10 mean areas outlined in
+        Table~\ref{table:owasp-focus} to test each of the areas, including access control, crypto, input handling, configuration, components, logging, and outbound calls, thoroughly.
 
-  \item \textbf{Remediation and re-testing}  
-        Provide detailed technical findings and remediation guidance to the
-        development and operations teams. After fixes are applied, perform
-        re-tests to confirm that vulnerabilities are closed and that remediation
-        has not introduced new security issues.
+  \item \textbf{Remediation and re-testing:}  
+        Deliver comprehensive, technical conclusions and remediation tips for the development and ops teams. Re-test following fixes to ensure vulnerabilities addressed and remediation did not create new vulnerabilities.
 
-  \item \textbf{Reporting}  
-        Produce a formal VAPT report containing all verified vulnerabilities,
-        their severity and potential impact, reproduction details, and
-        recommended remediation actions. Store reports and re-test results as
-        evidence for audits and future reviews.
+  \item \textbf{Reporting:}  
+        Generate a formal VAPT report that outlines all of the verified vulnerabilities, their severity and potential impact, reproduction and suggested remediation actions. Document and retain reports and re-test results for audits and reevaluation.
 \end{enumerate}
 
-Optionally, security assessment may be combined with load testing using Azure
-Load Testing or an equivalent tool. In this mode, realistic user load will be
-applied to VERACISM while security controls (rate limiting, throttling, and
-brute-force protections) are observed under stress.
+Optionally, security assessment can be conducted along with load testing performed using Azure Load Testing or other load testing tools. In this mode, realistic user load to be applied to VERACISM while observing security controls, rate limiting, throttling and brute forced protection under stress.
 
-To keep VERACISM secure over time, continuous monitoring with dependency and
-image scanning tools is recommended. Findings from these tools will be handled
-under ISM's vulnerability management process.
+Continuous monitoring of VERACISM is recommended by using dependency and image scanning tools to help maintain the security of VERACISM over time. The results of these multi-sensors will be managed as part of ISM's vulnerability management process.
 
 Security acceptance criteria for the project are:
 

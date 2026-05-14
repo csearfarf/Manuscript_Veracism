@@ -1,83 +1,53 @@
 \section{FUTURE WORK}
 
-This section presents practical next steps that can further strengthen
-VERACISM after the initial controlled deployment. The proposed work focuses on
-resilience, security governance, observability, performance, and standards
-alignment, and it follows the same assessment dimensions defined in the
-Project Assessment baseline.
+This section will provide practical steps a VERACISM might take post initial controlled deployment to reinforce VERACISM. The planned activities will concentrate on the following areas of resilience, security governance, observability, performance and standards alignment. It will also adhere to the same Assessment criteria established in the Project Assessment baseline to assess for the changes of the project in the future.
 
 \subsection{Reliability and Resilience}
 
-The scan and storage flow can be improved by adding a retry policy with
-exponential backoff for transient Lighthouse communication failures.
-Circuit breaker logic can also be added to prevent repeated calls to an
-unhealthy upstream service. A queued upload workflow can further improve
-reliability by allowing temporary buffering and controlled replay when external
-services recover.
+A retry policy with exponential backoff for transient communication failures between Lighthouse will be added, improving the scan and storage flow. Additionally, circuit breaker logic will be introduced to avoid repeated calls to a unhealthy upstream service. A queued upload workflow will further enhance the reliability by temporarily buffering and replay the upload when external services recover.
 
 \subsection{Functional and Integration Coverage Expansion}
 
-Future cycles should expand automated and manual coverage using the same
-planned test case structure from the Project Assessment chapter. Priority
-areas include deeper UI driven functional checks, broader integration checks
-for service to service failures, and additional evidence capture for pass,
-partial, and fail classifications.
+Future cycles should build the automated and manual coverage in the same manner in which test cases from the Project Assessment chapter were planned. Functional checking with UI will be enhanced with deeper UI-driven functional checks, integration check for service to service failures (wider), Evidence capture for pass, partial and fail (additional).
 
 \subsection{Audit and Verification Logging}
 
-Public verification should persist records to the VerificationLog table for
-traceability of every check operation. Audit views should also enforce strict
-tenant scoping in both API responses and user interface filters. This work
-will strengthen accountability and support institutional compliance reviews.
+The verification should continue saving the log entries to the VerificationLog table to track all verification operations. The tenant scoping applied to audit views will also be strictly enforced in API responses and the UI filters. The work will help to reinforce accountability and institutional compliance reviews.
 
 \subsection{Access Control Architecture}
 
-Current tenant ownership checks are effective but distributed across several
-controllers. A shared authorization layer can centralize these checks and
-reduce the risk of omission in future endpoints. Candidate approaches include
-policy based handlers and reusable ownership validation services.
+Current tenant ownership checks are effective, but they are distributed across
+several controllers. Future work should centralize authorization logic through
+a shared authorization layer to reduce duplication and lower the risk of
+missing ownership checks in future endpoints. Candidate approaches include
+policy-based handlers, reusable ownership validation services, and centralized
+authorization middleware for tenant-scoped resources.
+
+Centralising it will also help you have consistent security review in the future. Instead of reviewing each individual controller, reviewers will review a common authorization path, and ensure that new modules conform to the same access control rules.
 
 \subsection{Performance and Capacity Expansion}
 
-Future performance studies should include additional endpoints beyond public
-verification, especially the full upload and scanning pipeline under concurrent
-load. Rate limiting thresholds at the reverse proxy should be tuned using
-measured traffic profiles from pilot institutions. Long duration endurance
-tests can also be added to evaluate memory stability and sustained throughput.
+Future performance studies will cover more end-to-end points than just public verification, particularly the complete load test for both upload and scanning tests while doing both tests concurrently. Measuring traffic with pilot institutions, then tuning rate-limit thresholds in the reverse proxy level will be done. Endurance tests with long durations will also be added to test for maintaining memory stability and constant throughput.
 
-The next performance cycle should retain the baseline metrics from the Project
-Assessment chapter so that throughput, percentile latency, and error rate can
-be compared consistently across versions and environments.
+To ensure security and scanning pipelines are not overwhelmed with excess or abuse of uploads per tenant, a per-tenant upload limit will also be enforced.  This control will keep one tenant from using all the shared scanning resources and aid in maintaining equal distribution of platform usage among institutions. Rate limit will depend on the identity of the tenant, Bulk volume upload, Queue capacity in scan queue on the system, and seen traffic patterns during pilot implementation.
+
+The baseline measures as described in the Project Assessment chapter will be carried forward in the next performance cycle for consistency across versions and environments in terms of throughput, percentile latency, and error rate.
 
 \subsection{Security Hardening and Monitoring}
 
-The platform can be extended with continuous security regression testing,
-scheduled dependency review, and automated alerting for abnormal access
-patterns. A centralized security dashboard can combine scan outcomes,
-authorization events, and service health indicators for faster incident
-response.
+The platform will be further enhanced with periodic dependency review, continuous security regression testing and automated notifications for unusual access patterns. Scan results, authorization events, upload activity and service health indicators will be collated in a centralized security dashboard to provide faster incident response.
 
-Future security testing should continue the baseline approach of combining
-automated scanning with manual verification, with stronger traceability from
-each finding to remediation evidence.
+For future testing, the set background principles of automated testing and manual testing will be retained, but with increased linkage of results to evidence of remediation. The performance and security requirements determined in the Project Assessment chapter will also be kept as a reference for additional platforms to be added in the future. This will keep new features from weakening previously tested controls or excessively slowing the response time, or introducing an escalation of risk in the upload/verification/scan process.
 
 \subsection{User Acceptance and Deployment Readiness}
 
-User acceptance testing can be formalized using the role based task scripts
-defined in the Project Assessment chapter for administrators, tenant users,
-integrators, and external verifiers. This will provide stronger deployment
-readiness evidence for institutional onboarding and operational handover.
+The role-based task scripts for administrators, tenant users, integrators, and external verifiers from the Project Assessment chapter will be formalized as user acceptance testing. This will help in ensuring institutional onboarding and operational handover with more assurance of deployment readiness evidence.
 
 \subsection{Interoperability and Research Extensions}
 
-Future research can explore interoperability with verifiable credential
-frameworks and education metadata standards to support cross institution
-document exchange. Additional work may also examine privacy preserving
-verification strategies for selective disclosure of student records.
+In the future, this will be investigated with interoperability with verifiable credential frameworks and education metadata standards for the exchange of documents between institutions. Other research aims to investigate verification methods for selective disclosure of student records that preserve privacy.
 
 \subsection{Deployment and Adoption Roadmap}
 
-A staged rollout across partner institutions can be used to validate
-governance, onboarding effort, and operational support requirements.
-User training materials, support playbooks, and tenant onboarding templates
-can improve adoption and reduce implementation friction.
+There will be a rollout at partner institutions ensuring the product validation of governance, onboarding effort, and operational support needs in a staged manner. Samples of user training materials, playbooks for tenant help desk, and tenant onboarding templates will be made more user-friendly and decrease implementation friction.
+

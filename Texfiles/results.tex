@@ -2,40 +2,25 @@
 
 \section{RESULTS AND DISCUSSION}
 
-This section presents and discusses the outcomes of the four testing categories
-conducted to evaluate the VERACISM platform: (1)~functional testing,
-(2)~integration testing, (3)~performance testing, (4)~security testing, and
-(5)~user acceptance testing.
-Complete raw data for each category is reproduced in the appendices: detailed
-assertion level tables appear in Appendices~\ref{appendix:integration-tests}
-and \ref{appendix:functional-tests}; security findings in
-Appendix~\ref{appendix:security}; performance configuration in
-Appendix~\ref{appendix:performance}; and the full original test report PDFs
-in Appendices~\ref{appendix:pdf-functional}
-through~\ref{appendix:pdf-security-remediation}.
+This section introduces and explains the results of the five testing categories
+that have been performed to assess the VERACISM platform: (1) the functional testing,
+(2) the integration test, (3) the performance testing, (4) the security testing, and (5) the user acceptance testing.
+
+The appendices show the raw data for each category completely. All the
+assertion-level tables are detailed in the integration tests and functional tests
+Appendices 0.9 and 0.10. The security Appendix 0.11 includes security findings. Performance configuration is part of the performance Appendix 0.12. And the functional through security remediation PDF appendices contain full original test report PDFs.
 
 % ----------------------------------------------------------
 \subsection{Functional and Integration Testing}
 % ----------------------------------------------------------
 
-Functional and integration testing was carried out using the hybrid approach
-defined in the Project Assessment chapter: automated black box API testing via
-Newman and manual role based functional verification. The two streams used a
-common scenario set, with automation applied where API calls could be scripted
-and manual execution applied where validation required business logic or user
-interface inspection.
+The hybrid method outlined in the Project Assessment chapter – automated black box API testing using Newman and manual role based functional verification – was used for functional and integration testing. The two streams shared the same scenario set, with those scenarios scripted as automation steps and others performed manually (for their dependency on business logic and/or user interface considerations).
 
-\subsubsection{Automated test suite summary}
+\subsubsection{The automated test summary}
 
-The automated Integration Test Suite targeted five endpoint groups of the
-external VERACISM~API~v1: scan upload, report retrieval by CID, public
-verification, controlled download, and storage status check.  A total of
-22 test cases comprising 93~individual assertions were executed against the
-staging environment at \texttt{https://sb-api.ismanila.org/Veracism}.  The
-Functional Test Suite covered four user role groups in 19 automated suites
-comprising 89~assertions.  Both suites achieved a \textbf{100\% pass rate}
-with zero failures and zero errors.
-Table~\ref{tab:combined-test-summary} presents the combined statistics.
+The automated Integration Test Suite consisted of five test groups that interact with the external VERACISM API v1: scan upload, report retrieval by CID, public verification, controlled download and storage status check. Twenty two (22) test cases with a total of 93 individual assertions were run against the staging environment in \url{https://sb-api.ismanila.org/Veracism}. Four (4) user role groups were covered in 19 automated tests defined by 89 assertions in the Functional Test Suite. Everyone received a pass mark of 100\% for both suites and there were no failures or errors.
+
+Table~\ref{tab:combined-test-summary} shows the combined statistics.
 
 \begin{table}[H]
   \vspace{2ex}
@@ -69,12 +54,7 @@ Table~\ref{tab:combined-test-summary} presents the combined statistics.
 
 \subsubsection{Integration suite by endpoint group}
 
-Table~\ref{tab:int-group-breakdown} disaggregates the 93~integration assertions
-into the five endpoint groups under test, together with the total execution
-time recorded by the Newman runner.  The Scan Upload group accounts for the
-majority of elapsed time (\textbf{83.7\%} of the 83.7-second total run) because
-each upload call invokes the full document pipeline: SHA-256 computation,
-ClamAV and YARA scanning, Lighthouse encryption, and IPFS anchoring.
+Table~\ref{tab:int-group-breakdown} represents the 93~integration assertions run in the five endpoint groups, along with the overall run time of the Newman runner. Most of the elapsed time is spent in the Scan Upload group, representing 83.7\% of the total run time of 83.7 seconds; each of these ``scan upload'' calls triggers the whole document pipe: SHA-256 computation, ClamAV scanning, YARA scanning, Lighthouse encryption and IPFS anchoring.
 
 \begin{table}[H]
   \vspace{2ex}
@@ -109,25 +89,17 @@ ClamAV and YARA scanning, Lighthouse encryption, and IPFS anchoring.
   }%
   \vspace{2ex}
   \captionsetup{type=table}
-  \caption{Integration test suite results by endpoint group (full assertion detail in Appendix~\ref{appendix:integration-tests})}
+  \caption{Grouped by endpoints, the following is the result of running the integration test suite and providing full assertion details in Appendix~\ref{appendix:integration-tests})}
   \label{tab:int-group-breakdown}
 \end{table}
 
-\noindent The breakdown highlights an important performance characteristic: once a
-document is anchored to the Lighthouse/IPFS network, subsequent metadata
-retrieval (CID lookup, 0.147~s), public verification (0.066~s), and storage
-status check (0.061~s) all respond well within interactive latency
-expectations.  The upload pipeline itself, at 15--21~seconds per file, is
-inherently bounded by the round trip to the Lighthouse encryption proxy and
-the Filecoin network; this is consistent with expected Lighthouse API latency
-for file anchoring operations.
+\noindent The breakdown brings up an important aspect, the page load time -- every time the metadata is retrieved from the file (which also includes a lookup for its CID with 0.147 seconds -- still in interactive times, despite sending the message cross-network), anyone is able to verify its currency (0.066 seconds -- again, within interactive expectation), and one can check if it is stored or not (0.061 seconds -- still within interactive expectations). The upload pipeline is inherently known to be capped by the round trip to the Lighthouse encryption proxy and the Filecoin network - in this case of 15-21 seconds per file, since the round trip can't be avoided. This is around the normal latency of file anchoring operations with Lighthouse API.
 
-\subsubsection{Functional suite by automated group}
 
-Table~\ref{tab:func-auto-breakdown} disaggregates the 89 functional assertions
-into the four Newman runner groups: F1~(IT Office API), F2~(Registrar
-Upload), F3~(Public Verification), and F4~(End-to-End Journey).
-The total automated run time was \textbf{116.641~seconds}.
+
+\subsection{Functional suite by automated group}
+Table~\ref{tab:func-auto-breakdown} lists the 89 functional assertions for four of the Newman runner groups: F1, IT Office API; F2, Registrar Upload; F3, Public Verification; F4, End-to-End Journey.
+The total time spent on automated files was \textbf{116.641~seconds}.
 
 \begin{table}[H]
   \vspace{2ex}
@@ -164,13 +136,10 @@ The total automated run time was \textbf{116.641~seconds}.
   \label{tab:func-auto-breakdown}
 \end{table}
 
-\subsubsection{Manual and code review results by role}
+\subsubsection{Manual and code review results – per role}
 
-Beyond the automated API assertions, 30 test cases were evaluated in total
-(automated API + manual code review + observational inspection) spanning all
-five user roles defined in the system specification.
-Table~\ref{tab:func-manual-by-role} presents the pass/partial/fail breakdown
-per role group.
+In total, there are 30 test cases (automated API, manual code review and observational inspection) across all five user roles in the system specification.
+The pass, partial and fail split for each role group is shown in Table~\ref{tab:func-manual-by-role} 
 
 \begin{table}[H]
   \vspace{2ex}
@@ -211,17 +180,12 @@ per role group.
   \label{tab:func-manual-by-role}
 \end{table}
 
-\noindent The three role groups most critical to the system's value proposition,
-System Administrator, Registrar/Admin Office, and External Auditor, achieved
-\textbf{100\% pass rates} with no failures or partial results.  The IT Office
-group recorded the lowest rate (66.7\%) due to the single failure (TC-ITO-005)
-and one partial result (TC-ITO-006).
+\noindent A \textbf{100\% pass} with no failures and partial results was seen by three out of four groups that play the most critical role in the value proposition of the system (System Administrator, Registrar/Admin Office, External Auditor). The single failure (TC-ITO-005) and one partial result (TC-ITO-006) produced the lowest rates for the IT Office group, 66.7\%.
 
 \subsubsection{Open defects summary}
 
-Three defects were surfaced by the manual and code review phase.
-Table~\ref{tab:func-defects} summarises each defect, its severity, and its
-disposition.
+The Manual and code review phase was able to surface three defects.
+Details regarding each defect, its severity and disposition are summarized in Table~\ref{tab:func-defects}.
 
 \begin{table}[H]
   \vspace{2ex}
@@ -230,9 +194,9 @@ disposition.
   {%
   \setlength{\tabcolsep}{5pt}
   \renewcommand{\arraystretch}{1.3}
-  \begin{tabular}{|>{\centering\arraybackslash}p{0.10\textwidth}|
+  \begin{tabular}{|>{\centering\arraybackslash}p{0.12\textwidth}|
                   >{\centering\arraybackslash}p{0.08\textwidth}|
-                  >{\raggedright\arraybackslash}p{0.20\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.18\textwidth}|
                   >{\raggedright\arraybackslash}p{0.34\textwidth}|
                   >{\centering\arraybackslash}p{0.12\textwidth}|}
     \hline
@@ -248,7 +212,7 @@ disposition.
   }%
   \vspace{2ex}
   \captionsetup{type=table}
-  \caption{Open defects identified during functional testing: all scoped to future development sprint}
+  \caption{Open defects after functional testing: All of them are to be prioritized for upcoming development sprint}
   \label{tab:func-defects}
 \end{table}
 
@@ -257,32 +221,18 @@ disposition.
 The following system behaviours were confirmed by the combined testing programme:
 
 \begin{enumerate}
-  \item \textbf{Core pipeline is fully end to end functional.}  TC-E2E-001
-    demonstrated that the complete upload to verify workflow: file submission,
-    SHA-256 computation, threat scanning, Lighthouse anchoring, CID generation,
-    and unauthenticated public verification: succeeds in a single automated
-    run with \texttt{sha256Match: true} and \texttt{inLighthouse: true}.
+  \item \textbf{Core pipeline is fully end to end functional.} For TC-E2E-001, the threat scan is successful after completely uploading a file with verified attempt from unauthenticated public verification, \texttt{sha256Match: true} and \texttt{inLighthouse: true}.
 
-  \item \textbf{Multi-engine threat detection gates function correctly.}
-    TC-07A confirmed that a JPG embedding a webshell signature is flagged by
-    the YARA engine (rule: \texttt{image\_webshell\_signature}) and blocked
-    from Lighthouse upload, while ClamAV reports the same file as clean,
-    demonstrating the value of the multi engine approach.
+  \item \textbf{Multi-engine threat detection gates work properly.} A JPG with a webshell signature is detected through the usage of the YARA engine embedded in the rule: \texttt{image\_webshell\_signature} and cannot be uploaded to Lighthouse, whilst ClamAV says it is clean, as shown above, this multi engine approach proves useful.
 
-  \item \textbf{SHA-256 integrity is maintained end to end.}  The hash
+  \item \textbf{The SHA-256 integrity is maintained end to end.}  The hash
     computed at upload (TC-ITO-001) is retrievable via the report endpoint
     (TC-ITO-003) and confirmed by the public verification endpoint
     (TC-E2E-001), covering the full document lifecycle.
 
-  \item \textbf{Tenant data isolation prevents enumeration.}  TC-11 confirmed
-    that a CID owned by a different tenant returns HTTP~404, not HTTP~403,
-    preventing an authenticated attacker from inferring the existence of
-    cross tenant documents.
+  \item \textbf{An enumeration is not possible because tenant data isolation.}  TC-11 established that a CID of a different leaseholder will return a 404 response if an approved attacker tries to access a cross tenant CID he can conclude that documents does not exist, not that they are prohibited.
 
-  \item \textbf{Authentication and authorisation boundaries are correctly
-    enforced.}  All protected endpoints rejected requests with invalid or
-    missing tokens (HTTP~401/403).  The public verification endpoint returned
-    HTTP~200 without any credentials (TC-EXT-001, TC-15).
+  \item \textbf{The authentication and authorisation boundaries are proper.}  All protected endpoints returned bad HTTP 401/403 responses for requests with invalid or missing tokens. The public verification endpoint returned HTTP 200 without any credentials, TC-EXT-001 and TC-15.
 
   \item \textbf{Document immutability is enforced at the API level.}  No
     PUT or DELETE endpoints exist for report records (TC-REG-006); the API
@@ -340,7 +290,7 @@ Table~\ref{tab:perf-config-detail} summarises the configuration of both rounds.
   }%
   \vspace{2ex}
   \captionsetup{type=table}
-  \caption{Performance test configuration and run conditions (full PDF reports in Appendices~\ref{appendix:pdf-perf-v10} and~\ref{appendix:pdf-perf-v11})}
+  \caption{Performance test configuration and run conditions}
   \label{tab:perf-config-detail}
 \end{table}
 
@@ -388,38 +338,19 @@ HTTP~429 (Too~Many~Requests) before requests ever reached the .NET~8
 application server.  This was confirmed by disabling the rate limiting rules
 for Version~1.1, after which the error rate dropped substantially.
 
-This finding is operationally significant: the rate limiting layer is a
-necessary security control (it protects against denial-of-service and
-credential stuffing attacks), and it should \textit{not} be permanently
-removed.  Rather, the threshold values must be tuned to permit the expected
-peak concurrent-user volume while still blocking anomalously high request
-rates.  The performance testing exercise itself demonstrated the value of
-load testing under realistic concurrency conditions, surfacing a configuration
-gap that would have directly impaired the user experience under production
-load but would not have been detectable through functional or security testing
-alone.
+This finding is an important operational significance: If the rate limiting layer is always removed, this means that we \testit{cannot} take an important security measure for granted: blocking denial of service and credential stuffing attacks. Instead, it's important to set the thresholds to allow for the anticipated max concurrent users and same time, block abnormal amounts of request rates. The performance testing exercise itself highlighted the benefits of performing this testing with realistic levels of concurrency, and uncovered a configuration issue that would have impacted user engagement during run time and would not have been found during functional or security testing.
 
-Full numeric metrics, including request counts, P50/P95 response time
-percentiles, throughput graphs, and per second error-rate charts, are
-reproduced verbatim in Appendix~\ref{appendix:pdf-perf-v10}
-(Version~1.0) and Appendix~\ref{appendix:pdf-perf-v11} (Version~1.1).
+The performance PDF appendices, Appendix Version 1.0 and Appendix Version 1.1, contain a copy of full numeric metrics (such as request counts, P50/P95 response time percentiles, throughput graphs and per second error-rate charts). 
 
 % ----------------------------------------------------------
 \subsection{User Acceptance Testing}
 % ----------------------------------------------------------
 
-User acceptance testing was conducted using individual role-scoped task
-scripts collected through a structured Google Form
-(\textit{Veracism UAT Form.pdf}).  Each participant completed
-only the UAT items assigned to their selected role; blank columns in
-unassigned roles are intentional and are excluded from scoring.  The UAT
-cycle covered four participant roles: System Administrator, Tenant
-Administrator, IT Integrator / Developer, and External Verifier.
+User Acceptance Testing (UAT) was carried out for a specific task for each individual role-scoped user from a structured Google Form (\textit{Veracism UAT Form.pdf}).  Specific UAT items were assigned to a certain role, and blank columns are provided for roles that were not assigned. Unassigned columns are included only to allow for the scoring of columns that have been assigned and are not intentional. The UAT cycle included participation from four different roles: System Administrator, Tenant Administrator, IT Integrator / Developer, and External Verifier.
 
 \subsubsection{UAT participants and scope}
 
-Table~\ref{tab:uat-participants} summarises the 10 participants, their
-assigned roles, and the UAT items each role was expected to complete.
+Participants, roles and anticipated activities during UAT are summarized in Table~\ref{tab:uat-participants}.
 
 \begin{table}[H]
   \vspace{2ex}
@@ -499,66 +430,38 @@ The participant confirmed that all dashboard summary statistics loaded
 successfully without error, but noted the following usability suggestion:
 \textit{``Summary of information that can be seen in the system were loaded
 successfully without any error. Should include redirect links for every
-summary (more details or view full report).''}  This feedback is recorded as
-a low-severity usability enhancement request and is scoped to the next
-development phase, where clickable navigation links from each dashboard
-summary card to the corresponding detail or report view will be added.
-UAT-02 and UAT-03, covering user and configuration management, both passed
-fully.
+summary (more details or view full report).''}  This feedback is captured as a low impact usability Reflections and Enhance and will be made available in the next development cycle when navigation links will be provided to users from each dashboard summary card that link to the detail or report view. Both User and configuration management (UAT-02 and UAT-03) passed completely.
 
 \subsubsection{Key UAT findings}
 
-The following behaviours were confirmed by participant responses:
+The following behaviours were shared by the participant responses:
 
 \begin{enumerate}
-  \item \textbf{Public document verification is universally accessible.}
-    All five External Verifier participants (UAT-08) confirmed that document
-    verification via CID is functional without an account, with one participant
-    noting the experience as ``Excellent'' in their remarks.
+  \item \textbf{The services of verifying public documents are available to everyone.}
+    All five External Verifier participants, UAT-08, indicated that document verification using CID is working without register, and one said it was “Excellent” in comments.
 
-  \item \textbf{Tenant upload and file management workflows are accepted.}
-    Both Tenant Administrator participants confirmed UAT-04, UAT-05, and
-    UAT-06 passed fully.  Tenant records, user assignments, and API key
-    configuration were correctly reflected in the interface and audit trail.
+  \item \textbf{Easily accepted 2 Tenant upload and file management workflows.}
+    The Tenant Administrator participants all reported passing UAT-04, UAT-05, and UAT-06. Tenants records, user assignments and API key configuration were properly updated in the UI and audit log.
+    
+  \item \textbf{IT Integrator API access is working.}
+    The two IT Integrator participants confirmed that UAT-07 passed, concluding that the integration of the authenticated API upload and retrieval of metadata are as expected by programmatic consumers.
 
-  \item \textbf{IT Integrator API access is functional.}
-    Both IT Integrator participants confirmed UAT-07 passed, validating that
-    authenticated API upload integration and metadata retrieval operate as
-    expected for programmatic consumers.
-
-  \item \textbf{Administrator dashboard requires a usability improvement.}
-    UAT-01 was partially completed by the System Administrator participant.
-    The participant confirmed all data rendered without error and provided the
-    following constructive suggestion: \textit{``Should include redirect links
-    for every summary (more details or view full report).''}  This targeted
-    feedback will be incorporated in the next development phase by adding
-    navigation links from each dashboard summary card directly to the
-    corresponding detail view or full report page.
+  \item \textbf{Administrator dashboard needs to be improved in usability.}
+    The participant (the System Administrator) completed part of UAT-01. Every data presented showed no error and the participant gave the following constructive suggestion: “Should include redirect links for all summaries, should provide more details and/or present whole report.” This targeted feedback will be leveraged in the subsequent development iteration by providing navigation links from each dashboard summary card to the page or detail view of the specific card.
 
   \item \textbf{All 8 UAT IDs received at least one response.}
-    Every task defined across all roles was covered within the 10-participant
-    cohort, confirming full scenario coverage in the UAT cycle.
+    All tasks defined across all roles has been addressed within participant cohort of 10, achieving full scenario coverage in the UAT cycle.
 \end{enumerate}
-
-Full response data is recorded in
-Appendix~\ref{appendix:uat-results}.
 
 % ----------------------------------------------------------
 \subsection{Security Testing}
 % ----------------------------------------------------------
 
-Security evaluation proceeded in two phases: an initial dynamic application
-security test (DAST) using Burp Suite Community Edition, and a targeted manual
-code review and penetration-verification pass against each flagged finding.
-The full scan report is reproduced in
-Appendix~\ref{appendix:pdf-security-initial} and the remediation report in
-Appendix~\ref{appendix:pdf-security-remediation}.
+There was a first pass for security evaluation followed by a security evaluation pass where targeted manual code review and penetration testing were conducted for every security flagged found in the initial security evaluation pass – The first pass was performed using Burp Suite Community Edition – DAST was used.
 
 \subsubsection{Initial DAST scan overview}
 
-The Burp Suite scan of the staging endpoint surfaced findings at multiple
-severity levels.  Table~\ref{tab:dast-overview} summarises each finding
-category and its post-review disposition.
+The findings returned by Burp Suite scan for the staging endpoint were at various severities. Each category of finding and post-review disposition of the findings are summarized in Table~\ref{tab:dast-overview}.
 
 \begin{table}[H]
   \vspace{2ex}
@@ -567,8 +470,8 @@ category and its post-review disposition.
   {%
   \setlength{\tabcolsep}{5pt}
   \renewcommand{\arraystretch}{1.3}
-  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.26\textwidth}|
-                  >{\centering\arraybackslash}p{0.10\textwidth}|
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.22\textwidth}|
+                  >{\centering\arraybackslash}p{0.14\textwidth}|
                   >{\centering\arraybackslash}p{0.10\textwidth}|
                   >{\centering\arraybackslash}p{0.14\textwidth}|
                   >{\raggedright\arraybackslash}p{0.23\textwidth}|}
@@ -591,24 +494,15 @@ category and its post-review disposition.
   }%
   \vspace{2ex}
   \captionsetup{type=table}
-  \caption{Initial Burp Suite DAST findings and post-review dispositions (21 March 2026; full report in Appendix~\ref{appendix:pdf-security-initial})}
+  \caption{Burp DAST initial findings and post review disposition – 21 March 2026.}
   \label{tab:dast-overview}
 \end{table}
 
-\noindent All four SQL~Injection findings and the reflected XSS finding were determined
-to be false positives on manual code review.  The backend exclusively uses
-Entity Framework Core with LINQ-generated parameterised queries; handwritten
-SQL is absent from the codebase.  The scanner's SQL-injection heuristics were
-triggered by HTTP~403 responses returned by the IIS/Nginx proxy for
-malformed URL paths, not by any mishandling of SQL input in the application.
+\noindent The reflected XSS finding, as well as all four SQL Injection findings was judged to be false alerts on manual code review. No handwritten SQL anywhere in the back-end codebase, it relies on a single line of code query to Entity Framework Core object graph created using LINQ. However it was not the application running behind the scanner that mis-handled the SQL data on the input to it, but it was responses from the IIS/Nginx proxy to malformed URL paths that triggered the scanner's SQL-injection heuristics.
 
-\subsubsection{Confirmed vulnerabilities and remediation}
+\subsubsection{Listed vulnerabilities and remediation}
 
-Manual code review and targeted penetration testing identified and confirmed
-\textbf{five genuine vulnerabilities} prior to the initial controlled deployment,
-all of severity Medium--High or below.  All five were remediated before
-the deployment date.  Table~\ref{tab:security-detail} presents the full
-summary, including the remediation technique applied to each finding.
+\textbf{Five real vulnerabilities} prior to graded deployments were identified and confirmed by manual code review and target penetration testing, all Medium-High or lower. Before the deployment date all five of the following were remediated. The complete summary is included in the Table~\ref{tab:security-detail} which includes the remediation technique used to meet a finding.
 
 \begin{table}[H]
   \vspace{2ex}
@@ -618,10 +512,10 @@ summary, including the remediation technique applied to each finding.
   \setlength{\tabcolsep}{5pt}
   \renewcommand{\arraystretch}{1.3}
   \begin{tabular}{|>{\centering\arraybackslash}p{0.07\textwidth}|
-                  >{\raggedright\arraybackslash}p{0.22\textwidth}|
-                  >{\centering\arraybackslash}p{0.11\textwidth}|
-                  >{\raggedright\arraybackslash}p{0.36\textwidth}|
-                  >{\centering\arraybackslash}p{0.10\textwidth}|}
+                  >{\raggedright\arraybackslash}p{0.19\textwidth}|
+                  >{\centering\arraybackslash}p{0.13\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.34\textwidth}|
+                  >{\centering\arraybackslash}p{0.12\textwidth}|}
     \hline
     \textbf{ID} & \textbf{Vulnerability} & \textbf{Severity} & \textbf{Remediation Applied} & \textbf{Status} \\
     \hline\hline
@@ -639,23 +533,15 @@ summary, including the remediation technique applied to each finding.
   }%
   \vspace{2ex}
   \captionsetup{type=table}
-  \caption{Confirmed security vulnerabilities and remediation status (full detail in Appendix~\ref{appendix:pdf-security-remediation} and Appendix~\ref{appendix:security}, Table~\ref{tab:security-vulns})}
+  \caption{Confirmed security vulnerabilities and remediation status}
   \label{tab:security-detail}
 \end{table}
 
-\noindent Three of the five confirmed vulnerabilities (VUL-02, VUL-04, VUL-05) belonged
-to the Broken Object-Level Authorisation (BOLA) category.  BOLA
-vulnerabilities are particularly consequential for VERACISM because the
-data under protection includes sensitive academic records, transcripts,
-credentials, and institutional identifiers, whose confidentiality is a
-core platform guarantee.  All three BOLA paths have been closed by
-tenant scoped ownership checks at the controller level.
+\noindent Three of the five confirmed vulnerabilities (VUL-02, VUL-04, VUL-05) were classified as ‘Broken Object-Level Authorisation (BOLA)'. The African American reason funds are protected behind BOLA are sensitive academic papers, transcripts, credentials and institutional identifiers, whose confidentiality is a major platform guarantee. At the controller level, there are tenant scoped ownership checks performed across all three BOLA paths, which have also closed.
 
 \subsubsection{Security posture summary}
 
-Table~\ref{tab:security-posture} presents a one-page assessment of the
-platform's security posture across key dimensions at the time of initial
-controlled deployment.
+Table~\ref{tab:security-posture} presents a one-page assessment of the platform's security posture across key dimensions at the time of initial controlled deployment.
 
 \begin{table}[H]
   \vspace{2ex}
@@ -692,7 +578,7 @@ controlled deployment.
   }%
   \vspace{2ex}
   \captionsetup{type=table}
-  \caption{Security posture assessment at initial controlled deployment (March 2026)}
+  \caption{There is a security posture assessment for the initial deployment, where this take place, last March of 2026.}
   \label{tab:security-posture}
 \end{table}
 
@@ -700,41 +586,13 @@ controlled deployment.
 \subsection{Overall Discussion}
 % ----------------------------------------------------------
 
-  Taken together, the five testing streams present a consistent picture of a
-system that fulfils its core functional objectives while revealing
-infrastructure level configuration gaps correctable before production
-scale-out.
+Overall, the five streams of testing show a uniform picture of a system that meets its basic functional goals and infrastructure-level configuration issues that can be fixed prior to going to production scale-out locations.
 
-The \textbf{100\% automated assertion pass rate} across 182~assertions confirms
-that the document verification pipeline, from upload and threat scanning
-through to decentralised storage and public CID based verification, operates
-as designed under normal conditions.  The 90.0\% full-pass rate on the
-30-case manual suite reflects three bounded gaps in non-core subsystems
-(retry logic, audit tooling, and verification logging) that do not compromise
-the integrity or confidentiality of verified documents.
+The \textbf{100\% automated assertion pass rate} throughout the 182 assertions confirms that simply uploading your content, scanning for threats, then storing the content in a decentralised way and then later uploading a public CID based verification also works the way it should. The 30-case manual suite failed merely three times (with an overall 90.0\% full-pass rate), representing gaps in non-core subsystems, retry logic, audit tooling, and verified document verification logging, which do not impact the integrity or confidentiality of verified documents.
 
-The performance testing exercise surfaced a real operational concern, the
-rate limiting configuration, that would have impaired user experience under
-production load had it not been identified in the testing phase.  The v1.0
-error rate was caused entirely by infrastructure misconfiguration, not
-application defects; v1.1 confirmed the application layer is capable of
-sustaining 100-VU concurrent load.  The finding is correctable with
-configuration changes alone.
+There was a real operational worry, the rate limiting configuration configuration that the performance test exercise brought to light, which would have had a negative impact on the user experience if it had not been identified during the performance test. The v1.1 test verified that the application layer can handle up to 100-VU concurrent load, and that there were no application-level faults present in v1.0; it was only due to wrong configuration of infrastructure. It's a situation that can be fixed by configuration changes.
 
-The security assessment confirmed that the three most consequential risks
-(cross tenant data access via BOLA) were identified, documented, and fully
-remediated before the initial controlled deployment.  The DevSecOps workflow
-embedded in the development process, combining automated DAST scanning
-with manual code review, was effective at surfacing and closing
-access-control gaps.  The absence of any confirmed Critical or High
-severity vulnerability at deployment demonstrates a security baseline
-appropriate for controlled institutional use.
+After the initial controlled deployment of the three critical risks identified, documented, and remediated before the deployment, the security assessment validated that the three most significant risks were identified and documented, and were completely remediated. Embedding the DevSecOps workflow in the development process proved effective in discovering and fixing access-control issues with automated DAST scanning and manual code review. There are no reported Critical or High severity vulnerabilities at deployment, indicating that a general baseline level of security is suitable for controlled institutional use.
 
-One systemic observation across both security and functional testing phases
-is that tenant-ownership checks are currently implemented as repeated inline
-logic within individual controllers.  While functionally correct, this
-pattern increases the risk of omission in future endpoint additions.
-Centralising the checks into a shared base controller or a dedicated
-ASP.NET~Core authorisation handler is identified as a recommended
-architectural improvement for the next development phase.
+Here's another system-wide observation from both security and functional testing camps that tenant-ownership checks are being performed as a series of inline code in each controller today. This pattern is correct but can add to the possibility of omissions in subsequent endpoint additions. Putting the checks into a common base controller, or a dedicated ASP. The next development phase of .NET Core will include a recommended architectural upgrade to NetsLib AuthorisationHandler.
 

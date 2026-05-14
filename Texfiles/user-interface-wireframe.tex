@@ -42,7 +42,7 @@ Landing page presents a permanent, decentralized, blockchain-backed file verific
         \label{fig:signup-page}
 \end{figure}
 
-Veracism auth flow features a clean, centered card layout for both signup and login. New tenants can register by entering their school name, Google-based email, and full name, while existing users sign in using “Continue with Google,” managed by Auth0. After authentication, users are automatically routed to their own dashboard based on their role.
+VERACISM auth flow features a clean, centered card layout for both signup and login. New tenants can register by entering their school name, Google-based email address, and full name, while existing users sign in using “Continue with Google,” managed by Auth0. After authentication, users are automatically routed to their own dashboard based on their role.
 
 \clearpage
 
@@ -81,7 +81,7 @@ Veracism auth flow features a clean, centered card layout for both signup and lo
         \label{fig:admin-settings}
     \end{figure}
 
-    System Settings page lets admins configure YARA rules, manage the ClamAV antivirus engine, control API keys, and review system audit logs for Veracism.
+    System Settings page lets admins configure YARA rules, manage the ClamAV antivirus engine, control API keys, and review system audit logs for VERACISM.
 
 \begin{figure}[H]
         \centering
@@ -154,7 +154,7 @@ Veracism auth flow features a clean, centered card layout for both signup and lo
         \label{fig:tenants-file-upload}
 \end{figure}
 
-    On this upload step, tenants choose one or more files from their device and can optionally link each upload to a specific student number for easier tracking. Once submitted, the files are first scanned by the Veracism endpoint for malware, then encrypted inside Veracism using platform-managed keys. Only if a file is confirmed clean is its encrypted form written to Lighthouse storage, while its metadata (filename, size, owner, student tag), cryptographic SHA-256 hash, scan verdict, and detailed audit logs (who uploaded the file and when) are recorded in the database for future verification, traceability, and compliance reporting.
+    During this upload process, tenants are able to select the files to upload from their device and, if desired, also assign each upload to a specific student number, which allows it to be easily tracked later. Submitted files are first scanned by VERACISM endpoints for malware, then encrypted within VERACISM, by the platform managed encryption/decryption keys. Scan verdict and detailed audit logs (uploaders, date scanned) are only written to the database if the file has been confirmed clean; if the file is not confirmed as clean, its encrypted form is written to Lighthouse storage along with the metadata (filename, size, owner, student tag), cryptographic SHA-256 hash, and scan verdict.
 
 \begin{figure}[H]
         \centering
@@ -191,5 +191,31 @@ Veracism auth flow features a clean, centered card layout for both signup and lo
         \label{fig:tenants-user-management}
 \end{figure}
 
-    Tenant User Management page lets each organization fully control who can access and integrate with Veracism under their tenant. From a single view, tenant admins can invite new integrators by email, assign or change roles (such as Admin or Member), update user details, and enable or disable accounts without losing their history. The table shows current status and last login time for every user, helping admins monitor who is actively using the system. For technical users and integrations, admins can also generate and rotate tenant-scoped API keys per account, so every API call is tied to a specific user for fine-grained access control, easier revocation, and clear auditability.
+    Using Tenant User Management page, each organization has full control over who can access and integrate with Veracism under their tenant. Tenants can invite more integrators from the user's email address, assign, change or remove roles (Admin, Member), add/remove details about the user and enable or disable the user account from a single view without losing the user's history. Admins can use the table to see the status and last login for each user, which can help them determine who is currently using the system. Administrators can also create and rotate API keys per tenant and per account, making each API call account specific, for better access control, revocation and auditability.
+
+
+\begin{figure}[H]
+        \centering
+        \includegraphics[height=0.35\textheight,keepaspectratio]{Texfiles/images/System Design/PublicVerification.png}
+        \caption{Public Verification Portal}
+        \label{fig:public-verification}
+\end{figure}
+
+
+\begin{figure}[H]
+        \centering
+        \includegraphics[height=0.35\textheight,keepaspectratio]{Texfiles/images/System Design/PublicVerificationFile.PNG}
+        \caption{Public Verification Portal - Verified File}
+        \label{fig:public-verification-valid}
+\end{figure}
+
+\begin{figure}[H]
+        \centering
+        \includegraphics[height=0.35\textheight,keepaspectratio]{Texfiles/images/System Design/PublicVerificationInvalid.png}
+        \caption{Public Verification Portal - Invalid File}
+        \label{fig:public-verification-invalid}
+\end{figure}
+
+The Public Verification Portal, shown in Figure~\ref{fig:public-verification}, allows users to verify a document using its CID, QR code, or direct file upload. Veracism validates the document by checking the CID, recomputing the uploaded file's SHA-256 hash, and comparing it with the stored metadata registered during the original upload. If the CID, computed hash, and stored metadata match, the portal displays a verified response as shown in Figure~\ref{fig:public-verification-valid}, confirming that the document is authentic and unchanged. If the CID is not found, the hash does not match, or the metadata differs from the registered record, the portal displays an invalid response as shown in Figure~\ref{fig:public-verification-invalid}, indicating that the document may have been modified, is not registered, or cannot be trusted.
+
 \clearpage

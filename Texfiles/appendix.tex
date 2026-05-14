@@ -8,11 +8,8 @@
 \label{appendix:integration-tests}
 % ============================================================
 
-The following tables reproduce the complete assertion level results from the
-VERACISM API v1 Integration Test Suite executed on 30 March 2026 using the
-Newman CLI runner against the staging environment
-(\texttt{https://sb-api.ismanila.org/Veracism}).  All 93 assertions across
-22 test suites passed with zero failures and zero errors.
+The final results for all assertions contained within each of the following tables are the results of the VERACISM API v1 Integration Test run on 30 March 2026, using the Newman CLI runner against the Veracism staging environment
+(\texttt{https://sb-api.ismanila.org/Veracism}). No failures or errors in the 93 assertions made for 22 test suites.
 
 \subsection*{A.1: Scan Upload (\texttt{POST /api/v1/scan-upload})}
 
@@ -80,7 +77,7 @@ Newman CLI runner against the staging environment
   \end{tabular}
   }%
   \captionsetup{type=table}
-  \caption{Integration test results: Get Report by CID group (17 assertions, 0 failures, 0.307 s)}
+  \caption{The integration tests returned 17 assertions, 0 failures, and 0.307 s overall.The total time for the integration tests is 0.307 s, with 0 failures, 17 assertions, and a total of 0 reports.}
   \label{tab:int-report-cid}
 \end{table}
 
@@ -161,7 +158,8 @@ Newman CLI runner against the staging environment
   \end{tabular}
   }%
   \captionsetup{type=table}
-  \caption{Integration test suite overall summary}
+  \caption{Integration test suite overall summary
+}
   \label{tab:int-overall}
 \end{table}
 
@@ -171,16 +169,12 @@ Newman CLI runner against the staging environment
 \label{appendix:functional-tests}
 % ============================================================
 
-The following tables present the complete results from the VERACISM Functional
-Test Suite executed on 31 March 2026.  The suite combines 15 automated API
-test cases (executed via Newman with Bearer-token authentication), 11
-code review verifications, and 4 observational checks.  All 89 automated
-assertions passed with zero failures.
+
+The results of the entire VERACISM Functional Test Suite were run on 31 March 2026 and are presented in the following tables.  The 15 automated API test cases take place through automation with Bearer-token authentication, executed through Newman; 11 verifications are made though Code Review; 4 are Observable checks.  0 failures and all 89 automated assertions passed.
 
 \subsection*{B.1: Role-Based Functional Test Results}
 
-The 30 functional test cases are presented below in six separate tables,
-one per actor role, to improve readability.
+The 30 functional test cases are included below, each listed in a separate table, one for each actor role, for ease of readability.
 
 %: B.1a System Administrator ---
 \begin{table}[H]
@@ -190,11 +184,11 @@ one per actor role, to improve readability.
   {%
   \setlength{\tabcolsep}{4pt}
   \renewcommand{\arraystretch}{1.3}
-  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.11\textwidth}|
-                  >{\raggedright\arraybackslash}p{0.30\textwidth}|
-                  >{\raggedright\arraybackslash}p{0.15\textwidth}|
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.12\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.27\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.11\textwidth}|
                   >{\centering\arraybackslash}p{0.10\textwidth}|
-                  >{\raggedright\arraybackslash}p{0.22\textwidth}|}
+                  >{\raggedright\arraybackslash}p{0.26\textwidth}|}
     \hline
     \textbf{TC ID} & \textbf{Test Case} & \textbf{Method} & \textbf{Result} & \textbf{Key Evidence} \\
     \hline\hline
@@ -258,8 +252,8 @@ one per actor role, to improve readability.
   {%
   \setlength{\tabcolsep}{4pt}
   \renewcommand{\arraystretch}{1.3}
-  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.11\textwidth}|
-                  >{\raggedright\arraybackslash}p{0.30\textwidth}|
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.14\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.27\textwidth}|
                   >{\raggedright\arraybackslash}p{0.15\textwidth}|
                   >{\centering\arraybackslash}p{0.10\textwidth}|
                   >{\raggedright\arraybackslash}p{0.22\textwidth}|}
@@ -295,11 +289,11 @@ one per actor role, to improve readability.
   {%
   \setlength{\tabcolsep}{4pt}
   \renewcommand{\arraystretch}{1.3}
-  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.11\textwidth}|
-                  >{\raggedright\arraybackslash}p{0.30\textwidth}|
+  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.13\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.24\textwidth}|
                   >{\raggedright\arraybackslash}p{0.15\textwidth}|
                   >{\centering\arraybackslash}p{0.10\textwidth}|
-                  >{\raggedright\arraybackslash}p{0.22\textwidth}|}
+                  >{\raggedright\arraybackslash}p{0.26\textwidth}|}
     \hline
     \textbf{TC ID} & \textbf{Test Case} & \textbf{Method} & \textbf{Result} & \textbf{Key Evidence} \\
     \hline\hline
@@ -516,10 +510,10 @@ endpoints, and remediation status.
   \setlength{\tabcolsep}{5pt}
   \renewcommand{\arraystretch}{1.3}
   \begin{tabular}{|>{\centering\arraybackslash}p{0.07\textwidth}|
-                  >{\raggedright\arraybackslash}p{0.26\textwidth}|
-                  >{\centering\arraybackslash}p{0.12\textwidth}|
+                  >{\raggedright\arraybackslash}p{0.24\textwidth}|
+                  >{\centering\arraybackslash}p{0.13\textwidth}|
                   >{\raggedright\arraybackslash}p{0.34\textwidth}|
-                  >{\centering\arraybackslash}p{0.10\textwidth}|}
+                  >{\centering\arraybackslash}p{0.11\textwidth}|}
     \hline
     \textbf{ID} & \textbf{Title} & \textbf{Severity} & \textbf{Remediation Applied} & \textbf{Status} \\
     \hline\hline
@@ -572,11 +566,9 @@ endpoints, and remediation status.
 \label{appendix:performance}
 % ============================================================
 
-Two rounds of performance testing were conducted against the VERACISM staging
-environment using Postman's built-in Performance Testing feature.  The tests
-targeted the public CID verification endpoint
-(\texttt{GET /api/v1/verify?cid=\{cid\}}), which is the highest-traffic
-endpoint in the expected production workload.
+The VERACISM staging environment was used for two rounds of performance testing using Postman's in-built Performance Testing feature.  The tests
+focused on the public CID validation endpoint
+(\texttt{GET /api/v1/verify?cid=\{cid\}}), which is the most visited endpoint in the typical workload incoming to production.
 
 \subsection*{D.1: Test Configuration}
 
@@ -638,162 +630,9 @@ endpoint in the expected production workload.
   \end{tabular}
   }%
   \captionsetup{type=table}
-  \caption{Performance test observations summary (for full numeric data, see VERACISM-Performance-Testing-1.0.pdf and VERACISM-Performance-Testing-1.1.pdf)}
+  \caption{Observations summary for performance test, for complete numeric results, consult at VERACISM Performance Testing Version 1.0 and Version 1.1)}
   \label{tab:perf-observations}
 \end{table}
 
-\noindent The performance testing exercise revealed that the system infrastructure
-had a rate limiting policy configured at the Nginx reverse proxy layer that
-was set below the threshold required for the anticipated 100-concurrent-user
-load.  Version~1.0 results showed a notable proportion of failed requests
-attributed to HTTP~429 (Too Many Requests) responses returned by the proxy
-before requests reached the application layer.  Version~1.1 results, obtained
-after disabling the rate limiting rules for the test, demonstrated that the
-application itself handled the concurrent load with substantially lower error
-rates, confirming that the underlying .NET~8 application server and the
-SQL~Server database can sustain the tested load.  The rate limiting
-configuration requires re-tuning before production release to balance
-protection against abuse with legitimate concurrent usage.
-
-% ============================================================
-\clearpage
-\section{APPENDIX E: FUNCTIONAL \& INTEGRATION TEST RESULTS REPORT (FULL PDF)}
-\label{appendix:pdf-functional}
-% ============================================================
-
-The following pages reproduce the full automated test execution report
-(\textit{FUNCTIONAL\_INTEGRATION\_TEST\_RESULTS.pdf}) generated by the Newman
-CLI runner on 30--31 March 2026.  The report covers both the Integration Test
-Suite (22 test cases, 93 assertions) and the Functional Test Suite (19 test
-cases, 89 assertions).  All 182 assertions passed with zero failures and zero
-errors.
-
-% \includepdf[pages=-,pagecommand={\thispagestyle{empty}},fitpaper=true]%
-%   {Texfiles/reports/FUNCTIONAL_INTEGRATION_TEST_RESULTS.pdf}
-\noindent\textit{[Full report PDF submitted as a separate attachment.  Results are summarised in Appendices~A and~B above.]}
-
-% ============================================================
-\clearpage
-\section{APPENDIX F: PERFORMANCE TEST REPORT: VERSION 1.0 (FULL PDF)}
-\label{appendix:pdf-perf-v10}
-% ============================================================
-
-The following pages reproduce the full performance test report
-(\textit{VERACISM-Performance-Testing-1.0.pdf}) from the first load test run
-on 28 March 2026.  This run used 100 virtual users over a 5-minute duration
-against the public CID verification endpoint with the Nginx rate limiting
-policy \textbf{enabled}.  The elevated error rate visible in this report was
-subsequently diagnosed as HTTP~429 responses from the reverse proxy.
-
-\includepdf[pages=-,pagecommand={\thispagestyle{empty}},fitpaper=true]
-   {Texfiles/reports/VERACISM-Performance-Testing-1.0.pdf}
-\noindent\textit{[Full report PDF submitted as a separate attachment.  Results are summarised in Appendix~D above.]}
-
-% ============================================================
-\clearpage
-\section{APPENDIX G: PERFORMANCE TEST REPORT: VERSION 1.1 (FULL PDF)}
-\label{appendix:pdf-perf-v11}
-% ============================================================
-
-The following pages reproduce the full performance test report
-(\textit{VERACISM-Performance-Testing-1.1.pdf}) from the second load test run
-on 30 March 2026.  This run used the same configuration (100 virtual users,
-5 minutes) but with the Nginx rate limiting policy \textbf{disabled}.  The
-error rate is significantly lower than Version~1.0, confirming that the
-application layer itself is not the source of failures.
-
- \includepdf[pages=-,pagecommand={\thispagestyle{empty}},fitpaper=true]
-   {Texfiles/reports/VERACISM-Performance-Testing-1.1.pdf}
-\noindent\textit{[Full report PDF submitted as a separate attachment.  Results are summarised in Appendix~D above.]}
-
-% ============================================================
-\clearpage
-\section{APPENDIX H: SECURITY INITIAL ASSESSMENT REPORT (FULL PDF)}
-\label{appendix:pdf-security-initial}
-% ============================================================
-
-The following pages reproduce the full Burp Suite DAST scan report
-(\textit{Veracism-Security-Initial-Report.pdf}) produced on 21 March 2026.
-This report covers the dynamic security scan of the VERACISM staging
-environment, including all tentative findings (SQL injection, XSS, header
-issues, informational disclosures).  Manual code review subsequently confirmed
-that the SQL injection findings were false positives due to Entity Framework
-Core ORM usage throughout the data access layer.
-
- \includepdf[pages=-,pagecommand={\thispagestyle{empty}},fitpaper=true]
-   {Texfiles/reports/Veracism-Security-Initial-Report.pdf}
-\noindent\textit{[Full report PDF submitted as a separate attachment.  Findings are summarised in Appendix~C above.]}
-
-% ============================================================
-\clearpage
-\section{APPENDIX J: USER ACCEPTANCE TEST (UAT) RESULTS}
-\label{appendix:uat-results}
-% ============================================================
-
-The following appendix records the completed User Acceptance Testing (UAT)
-outcomes for VERACISM. UAT execution followed the role based task scripts used
-for administrator, tenant office, registrar, student, external verifier, and
-cross role journey validation. UAT entries were role scoped, so blank cells in
-non assigned UAT columns are expected and were excluded from scoring.
-
-\begin{table}[H]
-  \centering
-  \smalltable
-  \footnotesize
-  {%
-  \setlength{\tabcolsep}{8pt}
-  \renewcommand{\arraystretch}{1.3}
-  \begin{tabular}{|>{\raggedright\arraybackslash}p{0.45\textwidth}|
-                  >{\centering\arraybackslash}p{0.25\textwidth}|}
-    \hline
-    \textbf{UAT Metric} & \textbf{Result} \\
-    \hline\hline
-    UAT participants (responses) & 10 \\
-    \hline
-    Role scoped UAT evaluations recorded & 16 \\
-    \hline
-    Passed evaluations & 15 (93.8\%) \\
-    \hline
-    Partially completed evaluations & 1 (6.2\%) \\
-    \hline
-    Failed evaluations & 0 (0.0\%) \\
-    \hline
-    Unique UAT IDs with responses & 8 / 8 \\
-    \hline
-    Unique case outcomes & 7 Passed, 1 Partial, 0 Failed \\
-    \hline
-  \end{tabular}
-  }%
-  \captionsetup{type=table}
-  \caption{User Acceptance Test (UAT) execution summary}
-  \label{tab:uat-summary}
-\end{table}
-
-The following pages reproduce the full UAT response form
-(\textit{Veracism UAT Form.pdf}) collected on 23--27 April 2026.
-The form captures role-scoped task results from 10 participants across
-four roles: System Administrator, Tenant Administrator, IT Integrator /
-Developer, and External Verifier.  UAT outcomes are summarised in the
-Results and Discussion chapter and in Table~\ref{tab:uat-summary} above.
-
-\includepdf[pages=-,pagecommand={\thispagestyle{empty}},fitpaper=true]
-  {Texfiles/reports/Veracism UAT Form.pdf}
-
-% ============================================================
-\clearpage
-\section{APPENDIX I: SECURITY REMEDIATION REPORT (FULL PDF)}
-\label{appendix:pdf-security-remediation}
-% ============================================================
-
-The following pages reproduce the full Security Remediation Report
-(\textit{SECURITY\_REMEDIATION\_REPORT.pdf}) prepared on 27 March 2026.
-This report documents the five confirmed vulnerabilities (VUL-01 through
-VUL-05), their root-cause analysis, the specific source code changes applied
-for each remediation, and the post-fix verification performed.
-
- \includepdf[pages=-,pagecommand={\thispagestyle{empty}},fitpaper=true]
-  {Texfiles/reports/SECURITY_REMEDIATION_REPORT.pdf}
-\noindent\textit{[Full report PDF submitted as a separate attachment.  Findings are summarised in Appendix~C above.]}
-
-
+\noindent The performance testing exercise found that the system infrastructures, configured at the Nginx reverse proxy layer, have a rate limiting policy, so the policy is less than you need for the required load of 100 concurrent users. Version 1.0 responses indicated a significant percentage of too many requests (HTTP 429) responses in front of requests for the application layer. Based on version 1.1 results (where the rate limiting is disabled for the test), it ultimately showed that the application itself was able to deal with the concurrent load with considerably fewer error rates, which allowed to conclude that the underlying . worked.The tested load can be supported by the .NET 8 application server and SQL Server database. The rate limiting configuration needs re-tuning for production release in order to balance protection against abuse and concurrent usage.
 
